@@ -60,7 +60,7 @@ def main():
     show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
                     'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout'] 
     
-    st.dataframe(inactive_90_days_df.style[show_columns].applymap(color_depletion_table, subset=['Label']), 
+    st.dataframe(inactive_90_days_df.[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
                    use_container_width=True, hide_index=True) 
 
 
