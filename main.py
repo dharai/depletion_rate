@@ -63,14 +63,6 @@ def main():
     inactive_90_days_df['last_updated_date'] = inactive_90_days_df['last_updated_date'].dt.date 
     inactive_90_days_df['birthday'] = inactive_90_days_df['birthday'].dt.date  
 
-
-    # Show main table 
-    show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
-                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout'] 
-    
-    st.dataframe(inactive_90_days_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
-                   use_container_width=True, hide_index=True) 
-    
     ragout_df = inactive_90_days_df[inactive_90_days_df.Label == 'ragout']
     normal_df = inactive_90_days_df[inactive_90_days_df.Label == 'normal']
     lost_df   = inactive_90_days_df[inactive_90_days_df.Label == 'lost']
@@ -78,6 +70,18 @@ def main():
     n_ragout = ragout_df.shape[0] 
     n_normal = normal_df.shape[0] 
     n_lost   = lost_df.shape[0]
+
+    p_depletion = (n_ragout + n_lost)/total_number
+
+    st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
+
+
+    # Show main table 
+    show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
+                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout'] 
+    
+    st.dataframe(inactive_90_days_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
+                   use_container_width=True, hide_index=True) 
 
     ragout_group = ragout_df.item_type_name.value_counts()
     ragout_group = ragout_group.reset_index()  
