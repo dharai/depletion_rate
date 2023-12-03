@@ -44,10 +44,11 @@ def main():
     labeled_data = ml.predict_ragout_group(inactive_90_days_df[features]) 
     inactive_90_days_df = pd.merge(inactive_90_days_df, labeled_data, on='rfid_id', how='inner') 
     
-    inactive_90_days_df['label'] = 'ragout'
+    inactive_90_days_df['label'] = 'normal'
+    inactive_90_days_df.loc[inactive_90_days_df['prediction'] == 1, 'label'] =  'ragout'
 
     # Label items as loss 
-    # inactive_90_days_df.loc[inactive_90_days_df[''] condition, 'label'] =   
+    inactive_90_days_df.loc[(inactive_90_days_df['pickup_count'] <= 1) & (inactive_90_days_df['dropoff_count'] <= 1), 'label'] =  'lost'
 
 
     # Prepare to show 
@@ -56,7 +57,7 @@ def main():
     inactive_90_days_df['birthday'] = inactive_90_days_df['birthday'].dt.date  
 
     # Show main table 
-    st.data_editor(inactive_90_days_df.style.applymap(color_depletion_table, subset=['prediction']), 
+    st.dataframe(inactive_90_days_df.style.applymap(color_depletion_table, subset=['prediction']), 
                    use_container_width=True, hide_index=True) 
 
 
