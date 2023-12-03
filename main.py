@@ -71,14 +71,45 @@ def main():
     st.dataframe(inactive_90_days_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
                    use_container_width=True, hide_index=True) 
     
+    ragout_df = inactive_90_days_df[inactive_90_days_df.Label == 'ragout']
+    normal_df = inactive_90_days_df[inactive_90_days_df.Label == 'normal']
+    lost_df   = inactive_90_days_df[inactive_90_days_df.Label == 'lost']
 
-    n_ragout = inactive_90_days_df[inactive_90_days_df.Label == 'ragout'].shape[0] 
-    n_normal = inactive_90_days_df[inactive_90_days_df.Label == 'normal'].shape[0] 
-    n_lost   = inactive_90_days_df[inactive_90_days_df.Label == 'lost'].shape[0]
+    n_ragout = ragout_df.shape[0] 
+    n_normal = normal_df.shape[0] 
+    n_lost   = lost_df.shape[0]
+
+    ragout_group = ragout_df.item_type_name.value_counts()
+    ragout_group = ragout_group.reset_index()  
+    ragout_group.columns = ['Item Type', 'Items Count']
+
+    normal_group = normal_df.item_type_name.value_counts()
+    normal_group = normal_group.reset_index()  
+    normal_group.columns = ['Item Type', 'Items Count']
+
+    lost_group = lost_df.item_type_name.value_counts()
+    lost_group = lost_group.reset_index()  
+    lost_group.columns = ['Item Type', 'Items Count']
 
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
-    st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦')  
+    expander = st.expander("📁 Detailed Table") 
+    # plotly 
+    lost_group_bar = px.bar(lost_group, y='Items Count', x='Item Type')  
+    # Display the chart in Streamlit
+    expander.plotly_chart(lost_group_bar, use_container_width=True) 
+    
+    st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦') 
+    # plotly 
+    ragout_group_bar = px.bar(ragout_group, y='Items Count', x='Item Type')  
+    # Display the chart in Streamlit
+    expander.plotly_chart(ragout_group_bar, use_container_width=True) 
+
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
+    # plotly 
+    normal_group_bar = px.bar(normal_group, y='Items Count', x='Item Type')  
+    # Display the chart in Streamlit
+    expander.plotly_chart(normal_group_bar, use_container_width=True)
+
 
 
 if __name__ == '__main__':
