@@ -48,7 +48,8 @@ def main():
     inactive_90_days_df.loc[inactive_90_days_df['prediction'] == 1, 'Label'] =  'ragout'
 
     # Label items as loss 
-    inactive_90_days_df.loc[(inactive_90_days_df['pickup_count'] <= 1) & (inactive_90_days_df['dropoff_count'] <= 1), 'Label'] =  'lost'
+    inactive_90_days_df.loc[(inactive_90_days_df['pickup_count'] <= 1) & (inactive_90_days_df['dropoff_count'] <= 1) 
+                            & (inactive_90_days_df['prediction'] == 0), 'Label'] =  'lost'
 
 
     # Prepare to show 
