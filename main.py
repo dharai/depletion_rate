@@ -31,11 +31,13 @@ def main():
     selected_inventory_id = inventory_id_list[inventory_name_list.index(selected_customer_name)] 
 
     df, order_cycle_df = db.fetch_data(selected_inventory_id) # fetch main data 
+    total_number = order_cycle_df.shape[0]
 
     inactive_90_days_df = order_cycle_df[order_cycle_df.inactive_time > 90] 
     n_inactive_90_days = inactive_90_days_df.shape[0] 
+    p_inactive_90_days = (n_inactive_90_days/total_number)*100 
 
-    st.info("Number of items that are inactive for more than 90 days: **{:,}**".format(n_inactive_90_days), icon='🛑') 
+    st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
 
     # Predict ragout [current state]
     inactive_90_days_df['customer_id'] = selected_inventory_id
@@ -63,6 +65,15 @@ def main():
     
     st.dataframe(inactive_90_days_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
                    use_container_width=True, hide_index=True) 
+    
+
+    n_ragout = inactive_90_days_df[inactive_90_days_df.Label == 'ragout'].shape[0] 
+    n_normal = inactive_90_days_df[inactive_90_days_df.Label == 'normal'].shape[0] 
+    n_lost   = inactive_90_days_df[inactive_90_days_df.Label == 'lost'].shape 
+
+    st.info("Number of lost items: **{:,}**".format(n_ragout), icon='🔎')  
+    st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦')  
+    st.info("Number of normal items: **{:,}**".format(n_ragout), icon='🧺')  
 
 
 if __name__ == '__main__':
