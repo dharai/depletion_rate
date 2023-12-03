@@ -92,19 +92,21 @@ def main():
     lost_group.columns = ['Item Type', 'Items Count']
 
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
-    expander = st.expander("📁 Detailed Table") 
+    expander = st.expander("📁 Detailed Analysis") 
     # plotly 
     lost_group_bar = px.bar(lost_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
     expander.plotly_chart(lost_group_bar, use_container_width=True) 
     
     st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦') 
+    expander = st.expander("📁 Detailed Analysis") 
     # plotly 
     ragout_group_bar = px.bar(ragout_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
     expander.plotly_chart(ragout_group_bar, use_container_width=True) 
 
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
+    expander = st.expander("📁 Detailed Analysis") 
     # plotly 
     normal_group_bar = px.bar(normal_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
