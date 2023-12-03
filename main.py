@@ -82,7 +82,7 @@ def main():
     ragout_group = ragout_df.item_type_name.value_counts()
     ragout_group = ragout_group.reset_index()  
     ragout_group.columns = ['Item Type', 'Items Count']
-    ragout_last_operation_group = lost_df.last_operation.value_counts()
+    ragout_last_operation_group = ragout_df.last_operation.value_counts()
     ragout_last_operation_group = ragout_last_operation_group.reset_index()  
     ragout_last_operation_group.columns = ['Last Operation', 'Items Count'] 
 
@@ -90,7 +90,7 @@ def main():
     normal_group = normal_df.item_type_name.value_counts()
     normal_group = normal_group.reset_index()  
     normal_group.columns = ['Item Type', 'Items Count']
-    normal_last_operation_group = lost_df.last_operation.value_counts()
+    normal_last_operation_group = normal_df.last_operation.value_counts()
     normal_last_operation_group = normal_last_operation_group.reset_index()  
     normal_last_operation_group.columns = ['Last Operation', 'Items Count']
 
@@ -145,6 +145,10 @@ def main():
     normal_last_operation_fig.update_traces(marker_color='#3c8ff3')
     normal_last_operation_fig.update_traces(width=0.5)
     col1.plotly_chart(normal_last_operation_fig, use_container_width=True) 
+
+    st.markdown('<h1 style="color:#4B7CA7;font-size:24px;">Inactive Time Distribution</h1>', unsafe_allow_html=True)  
+    normal_inactive_distribution_fig = px.histogram(normal_df, x="inactive_time")
+    st.plotly_chart(normal_inactive_distribution_fig, use_container_width=True)
 
 
 
