@@ -91,6 +91,10 @@ def main():
     lost_group = lost_group.reset_index()  
     lost_group.columns = ['Item Type', 'Items Count']
 
+    last_operation_group = lost_df.last_operation.value_counts()
+    last_operation_group = last_operation_group.reset_index()  
+    last_operation_group.columns = ['Last Operation', 'Items Count']
+
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(lost_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
@@ -99,6 +103,12 @@ def main():
     lost_group_bar = px.bar(lost_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
     expander.plotly_chart(lost_group_bar, use_container_width=True) 
+
+    col1, col2 = expander.columns((4,8))  
+    last_operation_fig = px.bar(last_operation_group, x='Items Count', y='Last Operation')  
+    last_operation_fig.update_traces(marker_color='#3c8ff3')
+    last_operation_fig.update_traces(width=0.5)
+    col1.plotly_chart(last_operation_fig, use_container_width=True) 
     
     st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦') 
     expander = st.expander("📁 Detailed Analysis") 
