@@ -82,18 +82,24 @@ def main():
     ragout_group = ragout_df.item_type_name.value_counts()
     ragout_group = ragout_group.reset_index()  
     ragout_group.columns = ['Item Type', 'Items Count']
+    ragout_last_operation_group = lost_df.last_operation.value_counts()
+    ragout_last_operation_group = ragout_last_operation_group.reset_index()  
+    ragout_last_operation_group.columns = ['Last Operation', 'Items Count'] 
+
 
     normal_group = normal_df.item_type_name.value_counts()
     normal_group = normal_group.reset_index()  
     normal_group.columns = ['Item Type', 'Items Count']
+    normal_last_operation_group = lost_df.last_operation.value_counts()
+    normal_last_operation_group = normal_last_operation_group.reset_index()  
+    normal_last_operation_group.columns = ['Last Operation', 'Items Count']
 
     lost_group = lost_df.item_type_name.value_counts()
     lost_group = lost_group.reset_index()  
     lost_group.columns = ['Item Type', 'Items Count']
-
-    last_operation_group = lost_df.last_operation.value_counts()
-    last_operation_group = last_operation_group.reset_index()  
-    last_operation_group.columns = ['Last Operation', 'Items Count']
+    lost_last_operation_group = lost_df.last_operation.value_counts()
+    lost_last_operation_group = lost_last_operation_group.reset_index()  
+    lost_last_operation_group.columns = ['Last Operation', 'Items Count']
 
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
     expander = st.expander("📁 Detailed Analysis") 
@@ -105,10 +111,10 @@ def main():
     expander.plotly_chart(lost_group_bar, use_container_width=True) 
 
     col1, col2 = expander.columns((4,8))  
-    last_operation_fig = px.bar(last_operation_group, x='Items Count', y='Last Operation')  
-    last_operation_fig.update_traces(marker_color='#3c8ff3')
-    last_operation_fig.update_traces(width=0.5)
-    col1.plotly_chart(last_operation_fig, use_container_width=True) 
+    lost_last_operation_fig = px.bar(lost_last_operation_group, x='Items Count', y='Last Operation')  
+    lost_last_operation_fig.update_traces(marker_color='#3c8ff3')
+    lost_last_operation_fig.update_traces(width=0.5)
+    col1.plotly_chart(lost_last_operation_fig, use_container_width=True) 
     
     st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦') 
     expander = st.expander("📁 Detailed Analysis") 
@@ -119,6 +125,12 @@ def main():
     # Display the chart in Streamlit
     expander.plotly_chart(ragout_group_bar, use_container_width=True) 
 
+    col1, col2 = expander.columns((4,8))  
+    ragout_last_operation_fig = px.bar(ragout_last_operation_group, x='Items Count', y='Last Operation')  
+    ragout_last_operation_fig.update_traces(marker_color='#3c8ff3')
+    ragout_last_operation_fig.update_traces(width=0.5)
+    col1.plotly_chart(ragout_last_operation_fig, use_container_width=True) 
+
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(normal_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
@@ -127,6 +139,12 @@ def main():
     normal_group_bar = px.bar(normal_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
     expander.plotly_chart(normal_group_bar, use_container_width=True)
+
+    col1, col2 = expander.columns((4,8))  
+    normal_last_operation_fig = px.bar(normal_last_operation_group, x='Items Count', y='Last Operation')  
+    normal_last_operation_fig.update_traces(marker_color='#3c8ff3')
+    normal_last_operation_fig.update_traces(width=0.5)
+    col1.plotly_chart(normal_last_operation_fig, use_container_width=True) 
 
 
 
