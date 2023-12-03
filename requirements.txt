@@ -1,0 +1,6 @@
+pandas
+psycopg2-binary
+plotly
+requests
+lightgbm==3.3.5
+scikit-learn
