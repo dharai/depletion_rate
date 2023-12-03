@@ -100,16 +100,23 @@ def main():
     lost_last_operation_group = lost_df.last_operation.value_counts()
     lost_last_operation_group = lost_last_operation_group.reset_index()  
     lost_last_operation_group.columns = ['Last Operation', 'Items Count']
+    
+    lost_location_group = lost_df.location_type.value_counts().reset_index() 
+    lost_location_group.columns = ['Location', 'Count'] 
+
 
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(lost_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
                    use_container_width=True, hide_index=True) 
     # plotly 
+    location_pie_fig = px.pie(lost_location_group, values='Count', names='Location')
     lost_group_bar = px.bar(lost_group, y='Items Count', x='Item Type')  
     lost_group_bar.update_traces(marker_color='#3c8ff3') 
     # Display the chart in Streamlit
-    expander.plotly_chart(lost_group_bar, use_container_width=True) 
+    col1, col2 = expander.columns((6, 4))  
+    col1.plotly_chart(lost_group_bar, use_container_width=True) 
+    col2.plotly_chart(location_pie_fig, use_container_width=True) 
 
     col1, col2, col3 = expander.columns((4,1,5)) 
     lost_last_operation_fig = px.bar(lost_last_operation_group, x='Items Count', y='Last Operation')  
@@ -122,6 +129,8 @@ def main():
     lost_inactive_distribution_fig.update_layout(bargap=0.2)
     lost_inactive_distribution_fig.update_traces(marker_color='#3c8ff3')
     col3.plotly_chart(lost_inactive_distribution_fig, use_container_width=True)
+
+
     
     st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦') 
     expander = st.expander("📁 Detailed Analysis") 
