@@ -100,7 +100,7 @@ def main():
     lost_last_operation_group = lost_df.last_operation.value_counts()
     lost_last_operation_group = lost_last_operation_group.reset_index()  
     lost_last_operation_group.columns = ['Last Operation', 'Items Count']
-    
+
     lost_location_group = lost_df.location_type.value_counts().reset_index() 
     lost_location_group.columns = ['Location', 'Count'] 
 
@@ -115,10 +115,13 @@ def main():
     lost_group_bar.update_traces(marker_color='#3c8ff3') 
     # Display the chart in Streamlit
     col1, col2 = expander.columns((6, 4))  
+    col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Number of Items by Item Type</h4>', unsafe_allow_html=True) 
     col1.plotly_chart(lost_group_bar, use_container_width=True) 
+    col2.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Last Seen Location</h4>', unsafe_allow_html=True)
     col2.plotly_chart(location_pie_fig, use_container_width=True) 
 
     col1, col2, col3 = expander.columns((4,1,5)) 
+    col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Last Operation</h4>', unsafe_allow_html=True)
     lost_last_operation_fig = px.bar(lost_last_operation_group, x='Items Count', y='Last Operation')  
     lost_last_operation_fig.update_traces(marker_color='#3c8ff3')
     lost_last_operation_fig.update_traces(width=0.5)
@@ -143,6 +146,7 @@ def main():
     expander.plotly_chart(ragout_group_bar, use_container_width=True) 
 
     col1, col2, col3 = expander.columns((4,1,5)) 
+    col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Last Operation</h4>', unsafe_allow_html=True)
     ragout_last_operation_fig = px.bar(ragout_last_operation_group, x='Items Count', y='Last Operation')  
     ragout_last_operation_fig.update_traces(marker_color='#3c8ff3')
     ragout_last_operation_fig.update_traces(width=0.5)
