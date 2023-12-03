@@ -107,14 +107,21 @@ def main():
                    use_container_width=True, hide_index=True) 
     # plotly 
     lost_group_bar = px.bar(lost_group, y='Items Count', x='Item Type')  
+    lost_group_bar.update_traces(marker_color='#3c8ff3') 
     # Display the chart in Streamlit
     expander.plotly_chart(lost_group_bar, use_container_width=True) 
 
-    col1, col2 = expander.columns((4,8))  
+    col1, col2, col3 = expander.columns((4,1,5)) 
     lost_last_operation_fig = px.bar(lost_last_operation_group, x='Items Count', y='Last Operation')  
     lost_last_operation_fig.update_traces(marker_color='#3c8ff3')
     lost_last_operation_fig.update_traces(width=0.5)
     col1.plotly_chart(lost_last_operation_fig, use_container_width=True) 
+
+    col3.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Inactive Time Distribution</h4>', unsafe_allow_html=True)  
+    lost_inactive_distribution_fig = px.histogram(lost_df, x="inactive_time")
+    lost_inactive_distribution_fig.update_layout(bargap=0.2)
+    lost_inactive_distribution_fig.update_traces(marker_color='#3c8ff3')
+    col3.plotly_chart(lost_inactive_distribution_fig, use_container_width=True)
     
     st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦') 
     expander = st.expander("📁 Detailed Analysis") 
@@ -122,21 +129,29 @@ def main():
                    use_container_width=True, hide_index=True) 
     # plotly 
     ragout_group_bar = px.bar(ragout_group, y='Items Count', x='Item Type')  
+    ragout_group_bar.update_traces(marker_color='#3c8ff3') 
     # Display the chart in Streamlit
     expander.plotly_chart(ragout_group_bar, use_container_width=True) 
 
-    col1, col2 = expander.columns((4,8))  
+    col1, col2, col3 = expander.columns((4,1,5)) 
     ragout_last_operation_fig = px.bar(ragout_last_operation_group, x='Items Count', y='Last Operation')  
     ragout_last_operation_fig.update_traces(marker_color='#3c8ff3')
     ragout_last_operation_fig.update_traces(width=0.5)
     col1.plotly_chart(ragout_last_operation_fig, use_container_width=True) 
+
+    col3.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Inactive Time Distribution</h4>', unsafe_allow_html=True)  
+    ragout_inactive_distribution_fig = px.histogram(ragout_df, x="inactive_time")
+    ragout_inactive_distribution_fig.update_layout(bargap=0.2)
+    ragout_inactive_distribution_fig.update_traces(marker_color='#3c8ff3')
+    col3.plotly_chart(ragout_inactive_distribution_fig, use_container_width=True)
 
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(normal_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
                    use_container_width=True, hide_index=True) 
     # plotly 
-    normal_group_bar = px.bar(normal_group, y='Items Count', x='Item Type')  
+    normal_group_bar = px.bar(normal_group, y='Items Count', x='Item Type')
+    normal_group_bar.update_traces(marker_color='#3c8ff3')  
     # Display the chart in Streamlit
     expander.plotly_chart(normal_group_bar, use_container_width=True)
 
