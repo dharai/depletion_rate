@@ -11,12 +11,12 @@ st.set_page_config(page_title='Laundris Depletion Rate', layout='wide')
 
 
 def color_depletion_table(val):
-    if val == 1: 
-        color = 'green' 
-    elif val == 0: 
-        color = 'white'
+    if val == 'ragout': 
+        color = '#ede579' 
+    elif val == 'lost': 
+        color = '#d66e69'
     else: 
-        color = '#e95463'
+        color = '#6bbf82'
 
     return f'background-color: {color}'  
 
@@ -44,11 +44,11 @@ def main():
     labeled_data = ml.predict_ragout_group(inactive_90_days_df[features]) 
     inactive_90_days_df = pd.merge(inactive_90_days_df, labeled_data, on='rfid_id', how='inner') 
     
-    inactive_90_days_df['label'] = 'normal'
-    inactive_90_days_df.loc[inactive_90_days_df['prediction'] == 1, 'label'] =  'ragout'
+    inactive_90_days_df['Label'] = 'normal'
+    inactive_90_days_df.loc[inactive_90_days_df['prediction'] == 1, 'Label'] =  'ragout'
 
     # Label items as loss 
-    inactive_90_days_df.loc[(inactive_90_days_df['pickup_count'] <= 1) & (inactive_90_days_df['dropoff_count'] <= 1), 'label'] =  'lost'
+    inactive_90_days_df.loc[(inactive_90_days_df['pickup_count'] <= 1) & (inactive_90_days_df['dropoff_count'] <= 1), 'Label'] =  'lost'
 
 
     # Prepare to show 
@@ -57,7 +57,10 @@ def main():
     inactive_90_days_df['birthday'] = inactive_90_days_df['birthday'].dt.date  
 
     # Show main table 
-    st.dataframe(inactive_90_days_df.style.applymap(color_depletion_table, subset=['prediction']), 
+    show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
+                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout'] 
+    
+    st.dataframe(inactive_90_days_df.style[show_columns].applymap(color_depletion_table, subset=['Label']), 
                    use_container_width=True, hide_index=True) 
 
 
