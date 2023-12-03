@@ -140,15 +140,16 @@ def main():
     # Display the chart in Streamlit
     expander.plotly_chart(normal_group_bar, use_container_width=True)
 
-    col1, col2 = expander.columns((4,8))  
+    col1, col2, col3 = expander.columns((4,2,4)) 
+    col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Last Operation</h4>', unsafe_allow_html=True)
     normal_last_operation_fig = px.bar(normal_last_operation_group, x='Items Count', y='Last Operation')  
     normal_last_operation_fig.update_traces(marker_color='#3c8ff3')
     normal_last_operation_fig.update_traces(width=0.5)
     col1.plotly_chart(normal_last_operation_fig, use_container_width=True) 
 
-    col2.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Inactive Time Distribution</h4>', unsafe_allow_html=True)  
-    normal_inactive_distribution_fig = px.histogram(normal_df, x="inactive_time")
-    col2.plotly_chart(normal_inactive_distribution_fig, use_container_width=True)
+    col3.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Inactive Time Distribution</h4>', unsafe_allow_html=True)  
+    normal_inactive_distribution_fig = px.histogram(normal_df, x="inactive_time", bargap=0.2)
+    col3.plotly_chart(normal_inactive_distribution_fig, use_container_width=True)
 
 
 
