@@ -69,10 +69,10 @@ def main():
 
     n_ragout = inactive_90_days_df[inactive_90_days_df.Label == 'ragout'].shape[0] 
     n_normal = inactive_90_days_df[inactive_90_days_df.Label == 'normal'].shape[0] 
-    n_lost   = inactive_90_days_df[inactive_90_days_df.Label == 'lost'].shape 
+    n_lost   = inactive_90_days_df[inactive_90_days_df.Label == 'lost'].shape[0]
 
-    st.info("Number of lost items: **{:,}**".format(n_lost), icon='🧺')  
-    st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='🧺')  
+    st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
+    st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦')  
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
 
 
