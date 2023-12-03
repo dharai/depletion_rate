@@ -93,6 +93,8 @@ def main():
 
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
     expander = st.expander("📁 Detailed Analysis") 
+    expander.dataframe(lost_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
+                   use_container_width=True, hide_index=True) 
     # plotly 
     lost_group_bar = px.bar(lost_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
@@ -100,6 +102,8 @@ def main():
     
     st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦') 
     expander = st.expander("📁 Detailed Analysis") 
+    expander.dataframe(ragout_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
+                   use_container_width=True, hide_index=True) 
     # plotly 
     ragout_group_bar = px.bar(ragout_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
@@ -107,6 +111,8 @@ def main():
 
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
     expander = st.expander("📁 Detailed Analysis") 
+    expander.dataframe(normal_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
+                   use_container_width=True, hide_index=True) 
     # plotly 
     normal_group_bar = px.bar(normal_group, y='Items Count', x='Item Type')  
     # Display the chart in Streamlit
