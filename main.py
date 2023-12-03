@@ -146,9 +146,9 @@ def main():
     normal_last_operation_fig.update_traces(width=0.5)
     col1.plotly_chart(normal_last_operation_fig, use_container_width=True) 
 
-    st.markdown('<h1 style="color:#4B7CA7;font-size:24px;">Inactive Time Distribution</h1>', unsafe_allow_html=True)  
+    col2.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Inactive Time Distribution</h4>', unsafe_allow_html=True)  
     normal_inactive_distribution_fig = px.histogram(normal_df, x="inactive_time")
-    st.plotly_chart(normal_inactive_distribution_fig, use_container_width=True)
+    col2.plotly_chart(normal_inactive_distribution_fig, use_container_width=True)
 
 
 
