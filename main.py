@@ -71,9 +71,9 @@ def main():
     n_normal = inactive_90_days_df[inactive_90_days_df.Label == 'normal'].shape[0] 
     n_lost   = inactive_90_days_df[inactive_90_days_df.Label == 'lost'].shape 
 
-    st.info("Number of lost items: **{:,}**".format(n_ragout), icon='🔎')  
+    st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
     st.info("Number of ragout items: **{:,}**".format(n_ragout), icon='📦')  
-    st.info("Number of normal items: **{:,}**".format(n_ragout), icon='🧺')  
+    st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
 
 
 if __name__ == '__main__':
