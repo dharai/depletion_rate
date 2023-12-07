@@ -227,6 +227,8 @@ def main():
 
 
     # average lifetime of items 
+    col1, col2 = expander.columns((4, 2))  
+
     col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Average Lifetime of Items based on Ragout Items</h4>', unsafe_allow_html=True)
     lifetime_data = pd.read_csv("models/lifetime_items.csv")
     df_item_type = db.fetch_item_type_names() 
