@@ -85,17 +85,6 @@ def main():
     delation_heatmap_fig = px.imshow(heatmap_pivot_table,  
                                 labels=dict(x="Category", y="Item Type"), 
                                 x=heatmap_pivot_table.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")  
-    
-    # Define color map
-    color_map = {'lost': 'red', 'ragout': 'yellow', 'normal': 'green'} 
-    color_sequence = ['red', 'yellow', 'green'] 
-    
-    delation_heatmap_fig = px.imshow(heatmap_pivot_table.values,
-                        labels=dict(x="Label", y="item_type_name", color="Count"),
-                        x=heatmap_pivot_table.columns,
-                        y=heatmap_pivot_table.index,
-                        color_continuous_scale=color_sequence,
-                        )
 
     st.plotly_chart(delation_heatmap_fig, use_container_width=True) 
 
