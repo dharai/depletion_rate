@@ -31,7 +31,7 @@ def fetch_inventory_list():
 @st.cache_data 
 def fetch_item_type_names(): 
     conn = connect() 
-    command = "select id as item_type_id, customer_item_type_name as item_type from customer_customerinventoryitemtype"
+    command = "select id as item_type_id, customer_item_type_name as item_type_name from customer_customerinventoryitemtype"
 
     df = pd.read_sql(command, conn) 
     return df 
