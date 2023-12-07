@@ -53,6 +53,7 @@ def main():
     # Label items as loss 
     inactive_90_days_df.loc[(inactive_90_days_df['pickup_count'] <= 1) & (inactive_90_days_df['dropoff_count'] <= 1) 
                             & (inactive_90_days_df['prediction'] == 0), 'Label'] =  'lost'
+    
 
 
     # Prepare to show 
@@ -73,6 +74,11 @@ def main():
     n_lost   = lost_df.shape[0]
 
     p_depletion = (n_ragout + n_lost)/total_number
+
+    # Predict future ragout time  
+    features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
+    labeled_data = ml.predict_ragout_time_group(normal_df[features]) 
+    normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner')  
 
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
 
@@ -174,7 +180,12 @@ def main():
     ragout_inactive_distribution_fig.update_traces(marker_color='#3c8ff3')
     col3.plotly_chart(ragout_inactive_distribution_fig, use_container_width=True)
 
+
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
+    # Show main table 
+    show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
+                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 'predicted_ragout_time']  
+    
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(normal_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
                    use_container_width=True, hide_index=True) 
