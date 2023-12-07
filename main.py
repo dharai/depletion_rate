@@ -88,13 +88,13 @@ def main():
     
     # Define color map
     color_map = {'lost': 'red', 'ragout': 'yellow', 'normal': 'green'} 
+    color_sequence = ['red', 'yellow', 'green'] 
     
     delation_heatmap_fig = px.imshow(heatmap_pivot_table.values,
                         labels=dict(x="Label", y="item_type_name", color="Count"),
                         x=heatmap_pivot_table.columns,
                         y=heatmap_pivot_table.index,
-                        color_continuous_scale='Viridis',  # You can choose a different colorscale
-                        color_discrete_map=color_map,
+                        color_continuous_scale=color_sequence,
                         )
 
     st.plotly_chart(delation_heatmap_fig, use_container_width=True) 
