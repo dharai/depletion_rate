@@ -38,6 +38,7 @@ def main():
     p_inactive_90_days = (n_inactive_90_days/total_number)*100 
 
     st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
+    
 
     # Predict ragout [current state]
     inactive_90_days_df['customer_id'] = selected_inventory_id
@@ -75,6 +76,17 @@ def main():
 
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
 
+
+    # Heatmap 
+    depletion_grouped_data = inactive_90_days_df.groupby(['item_type_name', 'Label']).size().reset_index(name='count') 
+    heatmap_pivot_table = depletion_grouped_data.pivot(index='item_type_name', columns='Label', values='count')
+
+    custom_color_scale = ['#FFFFFF', '#eb827f'] 
+    delation_heatmap_fig = px.imshow(heatmap_pivot_table,  
+                                labels=dict(x="Category", y="Item Type"), 
+                                x=heatmap_pivot_table.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")  
+
+    st.plotly_chart(delation_heatmap_fig, use_container_width=True) 
 
     # Show main table 
     show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
