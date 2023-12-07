@@ -85,6 +85,13 @@ def main():
     delation_heatmap_fig = px.imshow(heatmap_pivot_table,  
                                 labels=dict(x="Category", y="Item Type"), 
                                 x=heatmap_pivot_table.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")  
+    
+    delation_heatmap_fig = px.imshow(delation_heatmap_fig.values,
+                                    labels=dict(x="Label", y="item_type_name", color="Count"),
+                                    x=delation_heatmap_fig.columns,
+                                    y=delation_heatmap_fig.index,
+                                    color_continuous_scale='Viridis',  # You can choose a different colorscale
+                                    )
 
     st.plotly_chart(delation_heatmap_fig, use_container_width=True) 
 
