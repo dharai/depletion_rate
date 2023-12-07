@@ -225,6 +225,23 @@ def main():
     col3.plotly_chart(normal_inactive_distribution_fig, use_container_width=True)
 
 
+    # average lifetime of items 
+    col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Average Lifetime of Items based on Ragout Items</h4>', unsafe_allow_html=True)
+    lifetime_data = pd.read_csv("models/lifetime_items.csv")
+    df_item_type = db.fetch_item_type_names() 
+    lifetime_data = lifetime_data.merge(df_item_type, on='item_type_id') 
+
+    lifetime_group = lifetime_data[['item_type_name', 'lifetime']].groupby('item_type_name').mean()
+    lifetime_group = lifetime_group.reset_index()  
+    lifetime_group.columns = ['Item Type', 'Average Lifetime'] 
+
+    lifetime_group_fig = px.histogram(normal_df, y = 'Item Type', x="Average Lifetime")
+    lifetime_group_fig.update_layout(bargap=0.2)
+    lifetime_group_fig.update_traces(marker_color='#3c8ff3')
+    col3.plotly_chart(lifetime_group_fig, use_container_width=True)
+
+
+
 
 if __name__ == '__main__':
     main() 
