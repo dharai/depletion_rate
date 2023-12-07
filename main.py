@@ -81,7 +81,7 @@ def main():
     # Heatmap 
     depletion_grouped_data = inactive_90_days_df.groupby(['item_type_name', 'Label']).size().reset_index(name='count') 
     heatmap_pivot_table = depletion_grouped_data.pivot(index='item_type_name', columns='Label', values='count')
-    heatmap_pivot_table.filna(0, inplace=True)
+    heatmap_pivot_table.fillna(0, inplace=True)
     if n_ragout == 0: 
         heatmap_pivot_table['ragout'] = 0 
     elif n_lost == 0: 
