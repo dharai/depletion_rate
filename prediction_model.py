@@ -69,6 +69,6 @@ def predict_ragout_time_group(df):
 
     data = scaler.transform(df[features]) 
 
-    df['prediction'] =  model_lgbm.predict(data) 
+    df['predicted_ragout_time'] =  model_lgbm.predict(data) 
 
     return df[['rfid_id', 'predicted_ragout_time']]
