@@ -49,7 +49,7 @@ def predict_ragout_group(df):
 
 
 def predict_ragout_time_group(df): 
-    df["usage_period"]          = df.apply(lambda x: calculate_lifetime(x['last_updated_date'], x['birthday']), axis=1)
+    # df["usage_period"]          = df.apply(lambda x: calculate_lifetime(x['last_updated_date'], x['birthday']), axis=1)
     df['usage_period_laundris'] = df.apply(lambda x: calculate_lifetime(x['last_updated_date'], x['creation_date']), axis=1) 
 
     features = ['item_type_id', 
