@@ -65,10 +65,12 @@ def predict_ragout_time_group(df):
 
     scaler = MinMaxScaler() 
     scaler = pickle.load(open(scaler_filename, 'rb')) 
+    
+    model = LGBMRegressor(n_estimators=350, learning_rate=0.03, random_state=42) 
     model_lgbm = pickle.load(open(model_filename, 'rb')) 
 
     data = scaler.transform(df[features]) 
 
-    df['predicted_ragout_time'] =  model_lgbm.predict(data) 
+    df['predicted_ragout_time'] = model_lgbm.predict(data) 
 
     return df[['rfid_id', 'predicted_ragout_time']]
