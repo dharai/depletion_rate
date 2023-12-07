@@ -239,6 +239,8 @@ def main():
     lifetime_group.columns = ['Item Type', 'Average Lifetime'] 
     lifetime_group['Average Lifetime'] = lifetime_group['Average Lifetime'].apply(math.ceil) 
 
+    lifetime_group['Average Lifetime'] = lifetime_group['Average Lifetime'].str + ' days'
+
     lifetime_group_fig = px.histogram(lifetime_group, y = 'Item Type', x="Average Lifetime")
     lifetime_group_fig.update_layout(bargap=0.2)
     lifetime_group_fig.update_traces(marker_color='#3c8ff3')
