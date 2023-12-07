@@ -192,14 +192,15 @@ def main():
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
 
     # Predict future ragout time  
-    features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
-    labeled_data = ml.predict_ragout_time_group(normal_df[features]) 
-    normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner')   
+    if n_normal > 0: 
+        features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
+        labeled_data = ml.predict_ragout_time_group(normal_df[features]) 
+        normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner')   
 
 
-    # Show main table 
-    show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
-                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 'predicted_ragout_time']  
+        # Show main table 
+        show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
+                        'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 'predicted_ragout_time']  
     
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(normal_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
