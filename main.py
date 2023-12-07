@@ -6,6 +6,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 import database as db
 import prediction_model as ml 
+import math 
 
 st.set_page_config(page_title='Laundris Depletion Rate', layout='wide') 
 
@@ -234,11 +235,12 @@ def main():
     lifetime_group = lifetime_data[['item_type_name', 'lifetime']].groupby('item_type_name').mean()
     lifetime_group = lifetime_group.reset_index()  
     lifetime_group.columns = ['Item Type', 'Average Lifetime'] 
+    lifetime_group['Average Lifetime'] = lifetime_group['Average Lifetime'].apply(math.ceil) 
 
     lifetime_group_fig = px.histogram(lifetime_group, y = 'Item Type', x="Average Lifetime")
     lifetime_group_fig.update_layout(bargap=0.2)
     lifetime_group_fig.update_traces(marker_color='#3c8ff3')
-    col3.plotly_chart(lifetime_group_fig, use_container_width=True)
+    col1.plotly_chart(lifetime_group_fig, use_container_width=True)
 
 
 
