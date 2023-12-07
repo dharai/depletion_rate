@@ -75,17 +75,25 @@ def main():
 
     p_depletion = (n_ragout + n_lost)/total_number
 
-    # Predict future ragout time  
-    # features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
-    # labeled_data = ml.predict_ragout_time_group(normal_df[features]) 
-    # normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner')  
-
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
 
 
     # Heatmap 
     depletion_grouped_data = inactive_90_days_df.groupby(['item_type_name', 'Label']).size().reset_index(name='count') 
     heatmap_pivot_table = depletion_grouped_data.pivot(index='item_type_name', columns='Label', values='count')
+    heatmap_pivot_table.filna(0, inplace=True)
+    if n_ragout == 0: 
+        heatmap_pivot_table['ragout'] = 0 
+    elif n_lost == 0: 
+        heatmap_pivot_table['lost'] = 0 
+    elif n_normal == 0: 
+        heatmap_pivot_table['normal'] = 0 
+    else: 
+        pass  
+
+    heatmap_pivot_table.rename(columns={"lost":"Lost", "normal":"Normal","ragout":"Ragout"}, inplace=True)
+    cols = ['Lost', 'Ragout', 'Normal'] 
+    heatmap_pivot_table = heatmap_pivot_table[cols] 
 
     custom_color_scale = ['#FFFFFF', '#eb827f'] 
     delation_heatmap_fig = px.imshow(heatmap_pivot_table,  
@@ -182,11 +190,16 @@ def main():
 
 
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
+
+    # Predict future ragout time  
+    features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
+    labeled_data = ml.predict_ragout_time_group(normal_df[features]) 
+    normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner')   
+
+
     # Show main table 
     show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
-                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 
-                    # 'predicted_ragout_time'
-                   ]  
+                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 'predicted_ragout_time']  
     
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(normal_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
