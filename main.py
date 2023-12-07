@@ -196,8 +196,9 @@ def main():
     if n_normal > 0: 
         features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
         labeled_data = ml.predict_ragout_time_group(normal_df[features]) 
-        normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner')   
+        normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner') 
 
+        normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days'  
 
         # Show main table 
         show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
@@ -238,8 +239,6 @@ def main():
     lifetime_group = lifetime_group.reset_index()  
     lifetime_group.columns = ['Item Type', 'Average Lifetime'] 
     lifetime_group['Average Lifetime'] = lifetime_group['Average Lifetime'].apply(math.ceil) 
-
-    lifetime_group['Average Lifetime'] = lifetime_group['Average Lifetime'].astype(str) + ' days'
 
     lifetime_group_fig = px.histogram(lifetime_group, y = 'Item Type', x="Average Lifetime")
     lifetime_group_fig.update_layout(bargap=0.2)
