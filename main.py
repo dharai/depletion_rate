@@ -136,7 +136,7 @@ def main():
 
     ### active items that are inactive for less than 90 days 
     features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
-    labeled_data = ml.predict_ragout_time_group(active_items_df[features], 0) 
+    labeled_data = ml.predict_ragout_time_group(active_items_df[features], 30) 
     active_items_df = pd.merge(active_items_df, labeled_data, on='rfid_id', how='inner') 
     active_items_df['predicted_ragout_time'] = active_items_df['predicted_ragout_time'].astype(str) + ' days'  
 
