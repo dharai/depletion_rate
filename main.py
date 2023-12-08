@@ -253,6 +253,8 @@ def main():
 
     col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Average Lifetime of Items based on Ragout Items</h4>', unsafe_allow_html=True)
     lifetime_data = pd.read_csv("models/lifetime_items.csv")
+    lifetime_data = lifetime_data[lifetime_data.customer_id == selected_inventory_id]
+    
     df_item_type = db.fetch_item_type_names() 
     lifetime_data = lifetime_data.merge(df_item_type, on='item_type_id') 
 
@@ -280,7 +282,7 @@ def main():
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(active_items_df[show_columns], use_container_width=True, hide_index=True)  
 
-    col1, col2, col3 = expander.columns((4,1,5)) 
+    col1, col2, col3 = expander.columns((5,1,5)) 
     col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Last Operation</h4>', unsafe_allow_html=True)
     active_last_operation_fig = px.bar(active_last_operation_group, x='Items Count', y='Last Operation')  
     active_last_operation_fig.update_traces(marker_color='#3c8ff3')
@@ -294,8 +296,11 @@ def main():
     col3.plotly_chart(active_inactive_distribution_fig, use_container_width=True)
 
 
-
-     
+    col3.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Usage Period Distribution</h4>', unsafe_allow_html=True)  
+    active_usage_period_distribution_fig = px.histogram(active_items_df, x="usage_period")
+    active_usage_period_distribution_fig.update_layout(bargap=0.2)
+    active_usage_period_distribution_fig.update_traces(marker_color='#3c8ff3')
+    col3.plotly_chart(active_usage_period_distribution_fig, use_container_width=True)
 
 
 
