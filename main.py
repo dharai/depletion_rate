@@ -133,6 +133,10 @@ def main():
     lost_location_group = lost_df.location_type.value_counts().reset_index() 
     lost_location_group.columns = ['Location', 'Count'] 
 
+    active_last_operation_group = active_items_df.last_operation.value_counts()
+    active_last_operation_group = active_last_operation_group.reset_index()  
+    active_last_operation_group.columns = ['Last Operation', 'Items Count']
+
 
     ### active items that are inactive for less than 90 days 
     features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
@@ -275,6 +279,19 @@ def main():
 
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(active_items_df[show_columns], use_container_width=True, hide_index=True)  
+
+    col1, col2, col3 = expander.columns((4,1,5)) 
+    col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Last Operation</h4>', unsafe_allow_html=True)
+    active_last_operation_fig = px.bar(active_last_operation_group, x='Items Count', y='Last Operation')  
+    active_last_operation_fig.update_traces(marker_color='#3c8ff3')
+    active_last_operation_fig.update_traces(width=0.5)
+    col1.plotly_chart(active_last_operation_fig, use_container_width=True) 
+
+    col3.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Inactive Time Distribution</h4>', unsafe_allow_html=True)  
+    active_inactive_distribution_fig = px.histogram(active_items_df, x="inactive_time")
+    active_inactive_distribution_fig.update_layout(bargap=0.2)
+    active_inactive_distribution_fig.update_traces(marker_color='#3c8ff3')
+    col3.plotly_chart(active_inactive_distribution_fig, use_container_width=True)
 
 
 
