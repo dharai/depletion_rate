@@ -260,7 +260,9 @@ def main():
 
 
 
-    ### active items that are inactive for less than 90 days 
+    ### active items that are inactive for less than 90 days
+    st.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Active Items Analysis</h4>', unsafe_allow_html=True)   
+
     st.info("Number of active items: **{:,}**".format(active_items_df.shape[0]), icon='🧺') 
 
     show_columns = ['rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
