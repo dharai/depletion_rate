@@ -34,6 +34,8 @@ def main():
     df, order_cycle_df = db.fetch_data(selected_inventory_id) # fetch main data 
     total_number = order_cycle_df.shape[0]
 
+    active_items_df = order_cycle_df[order_cycle_df.inactive_time <= 90]
+
     inactive_90_days_df = order_cycle_df[order_cycle_df.inactive_time > 90] 
     n_inactive_90_days = inactive_90_days_df.shape[0] 
     p_inactive_90_days = (n_inactive_90_days/total_number)*100 
@@ -42,6 +44,7 @@ def main():
     
 
     # Predict ragout [current state]
+    active_items_df['customer_id'] = selected_inventory_id
     inactive_90_days_df['customer_id'] = selected_inventory_id
 
     features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
@@ -134,6 +137,13 @@ def main():
 
     lost_location_group = lost_df.location_type.value_counts().reset_index() 
     lost_location_group.columns = ['Location', 'Count'] 
+
+
+    ### active items that are inactive for less than 90 days 
+    features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
+    labeled_data = ml.predict_ragout_time_group(active_items_df[features]) 
+    active_items_df = pd.merge(active_items_df, labeled_data, on='rfid_id', how='inner') 
+    active_items_df['predicted_ragout_time'] = active_items_df['predicted_ragout_time'].astype(str) + ' days'  
 
 
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
@@ -244,6 +254,21 @@ def main():
     lifetime_group_fig.update_layout(bargap=0.2)
     lifetime_group_fig.update_traces(marker_color='#3c8ff3')
     col1.plotly_chart(lifetime_group_fig, use_container_width=True)
+
+
+
+    ### active items that are inactive for less than 90 days 
+    st.info("Number of active items: **{:,}**".format(active_items_df.shape[0]), icon='🧺') 
+
+    show_columns = ['rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
+                        'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout_time']   
+
+    expander = st.expander("📁 Detailed Analysis") 
+    expander.dataframe(active_items_df[show_columns], use_container_width=True, hide_index=True)  
+
+
+
+     
 
 
 
