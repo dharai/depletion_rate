@@ -62,8 +62,11 @@ def main():
 
     # Prepare to show 
     today = pd.Timestamp(datetime.date.today(), tz='UTC')  
+    active_items_df['usage_period'] = today - active_items_df['creation_date']
+    active_items_df['usage_period'] = active_items_df['usage_period'].dt.days 
+
     inactive_90_days_df['usage_period'] = today - inactive_90_days_df['creation_date']
-    inactive_90_days_df['usage_period'] = inactive_90_days_df['usage_period'].dt.days 
+    inactive_90_days_df['usage_period'] = inactive_90_days_df['usage_period'].dt.days  
 
     inactive_90_days_df['creation_date'] = inactive_90_days_df['creation_date'].dt.date
     inactive_90_days_df['last_updated_date'] = inactive_90_days_df['last_updated_date'].dt.date 
