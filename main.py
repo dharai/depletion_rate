@@ -296,11 +296,11 @@ def main():
     col3.plotly_chart(active_inactive_distribution_fig, use_container_width=True)
 
 
-    col3.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Usage Period Distribution</h4>', unsafe_allow_html=True)  
+    col1.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Usage Period Distribution</h4>', unsafe_allow_html=True)  
     active_usage_period_distribution_fig = px.histogram(active_items_df, x="usage_period")
     active_usage_period_distribution_fig.update_layout(bargap=0.2)
     active_usage_period_distribution_fig.update_traces(marker_color='#3c8ff3')
-    col3.plotly_chart(active_usage_period_distribution_fig, use_container_width=True)
+    col1.plotly_chart(active_usage_period_distribution_fig, use_container_width=True)
 
 
 
