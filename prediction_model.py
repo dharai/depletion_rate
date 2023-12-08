@@ -48,7 +48,7 @@ def predict_ragout_group(df):
     return df[['rfid_id', 'prediction','predicted_ragout']]
 
 
-def predict_ragout_time_group(df): 
+def predict_ragout_time_group(df, addition): 
     df["usage_period"]          = df.apply(lambda x: calculate_lifetime(x['last_updated_date'], x['birthday']), axis=1)
     df['usage_period_laundris'] = df.apply(lambda x: calculate_lifetime(x['last_updated_date'], x['creation_date']), axis=1) 
 
@@ -72,6 +72,6 @@ def predict_ragout_time_group(df):
     data = scaler.transform(df[features]) 
 
     df['predicted_ragout_time'] = model_lgbm.predict(data) 
-    df['predicted_ragout_time'] = df['predicted_ragout_time'].apply(math.ceil) + 30
+    df['predicted_ragout_time'] = df['predicted_ragout_time'].apply(math.ceil) + addition
 
     return df[['rfid_id', 'predicted_ragout_time']]

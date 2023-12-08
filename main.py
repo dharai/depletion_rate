@@ -107,14 +107,6 @@ def main():
                                 labels=dict(x="Category", y="Item Type"), 
                                 x=heatmap_pivot_table.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")  
 
-    st.plotly_chart(delation_heatmap_fig, use_container_width=True) 
-
-    # Show main table 
-    show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
-                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout'] 
-    
-    st.dataframe(inactive_90_days_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
-                   use_container_width=True, hide_index=True) 
 
     ragout_group = ragout_df.item_type_name.value_counts()
     ragout_group = ragout_group.reset_index()  
@@ -144,9 +136,26 @@ def main():
 
     ### active items that are inactive for less than 90 days 
     features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
-    labeled_data = ml.predict_ragout_time_group(active_items_df[features]) 
+    labeled_data = ml.predict_ragout_time_group(active_items_df[features], 0) 
     active_items_df = pd.merge(active_items_df, labeled_data, on='rfid_id', how='inner') 
     active_items_df['predicted_ragout_time'] = active_items_df['predicted_ragout_time'].astype(str) + ' days'  
+
+    if n_normal > 0: 
+        features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
+        labeled_data = ml.predict_ragout_time_group(normal_df[features], 0) 
+        normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner') 
+
+        normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days'  
+
+
+    ### Heatmap -------------------------------------------------------------------
+    st.plotly_chart(delation_heatmap_fig, use_container_width=True)  
+    # Show main table 
+    show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
+                    'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout'] 
+    
+    st.dataframe(inactive_90_days_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
+                   use_container_width=True, hide_index=True) 
 
 
     st.info("Number of lost items: **{:,}**".format(n_lost), icon='🔎')  
@@ -203,16 +212,11 @@ def main():
     col3.plotly_chart(ragout_inactive_distribution_fig, use_container_width=True)
 
 
+
     st.info("Number of normal items: **{:,}**".format(n_normal), icon='🧺')  
 
     # Predict future ragout time  
     if n_normal > 0: 
-        features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
-        labeled_data = ml.predict_ragout_time_group(normal_df[features]) 
-        normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner') 
-
-        normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days'  
-
         # Show main table 
         show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
                         'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 'predicted_ragout_time']  
@@ -261,7 +265,8 @@ def main():
 
 
     ### active items that are inactive for less than 90 days
-    st.markdown('<h4 style="color:#4B7CA7;font-size:16px;">Active Items Analysis</h4>', unsafe_allow_html=True)   
+    st.markdown("***")
+    st.markdown('<h3 style="color:#4B7CA7;font-size:20px;">Active Items Analysis</h3>', unsafe_allow_html=True)   
 
     st.info("Number of active items: **{:,}**".format(active_items_df.shape[0]), icon='🧺') 
 
