@@ -226,7 +226,7 @@ def main():
     next_first_month_group = next_first_month_group.reset_index()  
     next_first_month_group.columns = ['Item Type', f'Ragout on {next_first_month}'] 
 
-    next_second_month_group = next_second_month.item_type_name.value_counts()
+    next_second_month_group = next_second_month_df.item_type_name.value_counts()
     next_second_month_group = next_second_month_group.reset_index()  
     next_second_month_group.columns = ['Item Type', f'Ragout on {next_second_month}'] 
 
