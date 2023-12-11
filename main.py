@@ -201,7 +201,6 @@ def main():
     pickedup_items_group.columns = ['Item Type', 'On Facility Items Count']
 
     item_heatmap = item_heatmap.merge(pickedup_items_group, on='Item Type', how='left') 
-    item_heatmap.fillna(0, inplace=True) 
     
     # Get the current date and time
     current_date = datetime.datetime.now()
@@ -215,6 +214,7 @@ def main():
 
     item_heatmap = item_heatmap.merge(current_month_group, on='Item Type', how='left')  
 
+    item_heatmap.fillna(0, inplace=True) 
     item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {current_month}']
 
     st.dataframe(item_heatmap)
