@@ -241,7 +241,7 @@ def main():
     item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
 
     item_heatmap.set_index("Item Type", inplace=True)
-    custom_color_scale = ['#eb827f', '#fcbeb6', '#FFFFFF'] 
+    custom_color_scale = ['#eb827f', '#fcbeb6', '#f2d4d0', '#FFFFFF'] 
     items_heatmap_fig = px.imshow(item_heatmap,  
                                 labels=dict(x="Category", y="Item Type"), 
                                 x=item_heatmap.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
