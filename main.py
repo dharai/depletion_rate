@@ -153,7 +153,7 @@ def main():
 
 
     ## create par level heatmap 
-    columns = ['rfid_id', 'item_type_name', 'last_operation', 'predicted_ragout_time']
+    columns = ['rfid_id', 'item_type_name', 'side', 'last_operation', 'predicted_ragout_time']
      
     item_heatmap = order_cycle_df.item_type_name.value_counts()
     item_heatmap = item_heatmap.reset_index()  
@@ -170,14 +170,16 @@ def main():
     else: 
         normal_items_df = active_items_df[columns]
 
-    pickedup_items_df = normal_items_df[normal_items_df.last_operation == 'pickup']
+    pickedup_items_df = normal_items_df[normal_items_df.sice == 'facility']
     pickedup_items_group = pickedup_items_df.item_type_name.value_counts()
     pickedup_items_group = pickedup_items_group.reset_index()  
-    pickedup_items_group.columns = ['Item Type', 'Picked-up Items Count']
+    pickedup_items_group.columns = ['Item Type', 'On Facility Items Count']
 
     item_heatmap = item_heatmap.merge(pickedup_items_group, on='Item Type', how='left') 
+    item_heatmap.fillna(0, inplace=True) 
+    item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap['On Facility Items Count']
 
-
+    
     st.dataframe(item_heatmap)
 
 
