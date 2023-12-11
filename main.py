@@ -206,6 +206,8 @@ def main():
     current_date = datetime.datetime.now()
     # Get the current month in words
     current_month = current_date.strftime("%B")
+    next_first_month = get_next_month(current_month)
+    next_second_month =  get_next_month(next_first_month)
 
     current_month_df = normal_items_df[normal_items_df.ragout_month == current_month] 
     current_month_group = current_month_df.item_type_name.value_counts()
@@ -217,7 +219,22 @@ def main():
     item_heatmap.fillna(0, inplace=True) 
     item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {current_month}']
 
-    st.dataframe(item_heatmap)
+    next_first_month_df = normal_items_df[normal_items_df.ragout_month == next_first_month] 
+    next_second_month_df = normal_items_df[normal_items_df.ragout_month == next_second_month]
+
+    next_first_month_group = next_first_month_df.item_type_name.value_counts()
+    next_first_month_group = next_first_month_group.reset_index()  
+    next_first_month_group.columns = ['Item Type', f'Ragout on {next_first_month}'] 
+
+    next_second_month_group = next_second_month.item_type_name.value_counts()
+    next_second_month_group = next_second_month_group.reset_index()  
+    next_second_month_group.columns = ['Item Type', f'Ragout on {next_second_month}'] 
+
+
+    item_heatmap = item_heatmap.merge(next_first_month_group, on='Item Type', how='left')  
+    item_heatmap = item_heatmap.merge(next_second_month_group, on='Item Type', how='left')  
+
+    st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
 
     if n_normal > 0: 
         normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days' 
