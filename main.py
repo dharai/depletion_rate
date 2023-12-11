@@ -170,7 +170,7 @@ def main():
     else: 
         normal_items_df = active_items_df[columns]
 
-    pickedup_items_df = normal_items_df[normal_items_df.sice == 'facility']
+    pickedup_items_df = normal_items_df[normal_items_df.side == 'facility']
     pickedup_items_group = pickedup_items_df.item_type_name.value_counts()
     pickedup_items_group = pickedup_items_group.reset_index()  
     pickedup_items_group.columns = ['Item Type', 'On Facility Items Count']
