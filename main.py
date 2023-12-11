@@ -228,11 +228,17 @@ def main():
 
     next_second_month_group = next_second_month_df.item_type_name.value_counts()
     next_second_month_group = next_second_month_group.reset_index()  
-    next_second_month_group.columns = ['Item Type', f'Ragout on {next_second_month}'] 
-
-
+    next_second_month_group.columns = ['Item Type', f'Ragout on {next_second_month}']   
+    
     item_heatmap = item_heatmap.merge(next_first_month_group, on='Item Type', how='left')  
+    item_heatmap.fillna(0, inplace=True)
+
+    item_heatmap[f'Available on {next_first_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}']
+
     item_heatmap = item_heatmap.merge(next_second_month_group, on='Item Type', how='left')  
+    item_heatmap.fillna(0, inplace=True)
+
+    item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
 
     st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
 
