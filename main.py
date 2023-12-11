@@ -24,7 +24,7 @@ def color_depletion_table(val):
 
 def get_next_month(current_month):
     # Convert the month name to a datetime object
-    current_date = datetime.strptime(current_month, '%B')
+    current_date = datetime.datetime.strptime(current_month, '%B')
 
     # Calculate the first day of the next month
     first_day_of_next_month = current_date.replace(day=1) + datetime.timedelta(days=32)
