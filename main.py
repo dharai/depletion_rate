@@ -65,9 +65,6 @@ def main():
     n_inactive_90_days = inactive_90_days_df.shape[0] 
     p_inactive_90_days = (n_inactive_90_days/total_number)*100 
 
-    st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
-    
-
     # Predict ragout [current state]
     active_items_df['customer_id'] = selected_inventory_id
     inactive_90_days_df['customer_id'] = selected_inventory_id
@@ -106,8 +103,6 @@ def main():
     n_lost   = lost_df.shape[0]
 
     p_depletion = (n_ragout + n_lost)/total_number
-
-    st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
 
 
     # Heatmap 
@@ -241,14 +236,16 @@ def main():
     item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
 
     item_heatmap.set_index("Item Type", inplace=True)
-    custom_color_scale = ['#eb827f', '#fcbeb6', '#f2d4d0', '#f2d4d0', '#f2d4d0', '#FFFFFF'] 
+    custom_color_scale = ['#FFFFFF', '#3c8ff3'] 
     items_heatmap_fig = px.imshow(item_heatmap,  
                                 labels=dict(x="Category", y="Item Type"), 
                                 x=item_heatmap.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
     
     st.plotly_chart(items_heatmap_fig, use_container_width=True)   
 
-    # st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
+    st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
+    st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
+
 
     if n_normal > 0: 
         normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days' 
