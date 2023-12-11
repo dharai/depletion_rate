@@ -152,6 +152,36 @@ def main():
         normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days'  
 
 
+    ## create par level heatmap 
+    columns = ['rfid_id', 'item_type_name', 'last_operation', 'predicted_ragout_time']
+     
+    item_heatmap = order_cycle_df.item_type_name.value_counts()
+    item_heatmap = item_heatmap.reset_index()  
+    item_heatmap.columns = ['Item Type', 'Total Items Count']
+
+    item_heatmap = item_heatmap.merge(ragout_group, on='Item Type', how='left') 
+    item_heatmap.rename(columns={"Items Count": "Current Ragout Items"}, inplace=True)
+
+    item_heatmap = item_heatmap.merge(lost_group, on='Item Type', how='left') 
+    item_heatmap.rename(columns={"Items Count": "Current Lost Items"}, inplace=True)
+
+    if n_normal > 0: 
+        normal_items_df = pd.concat(normal_df[columns], normal_items_df[columns])
+    else: 
+        normal_items_df = active_items_df[columns]
+
+    pickedup_items_df = normal_items_df[normal_items_df.last_operation == 'pickup']
+    pickedup_items_group = pickedup_items_df.item_type_name.value_counts()
+    pickedup_items_group = pickedup_items_group.reset_index()  
+    pickedup_items_group.columns = ['Item Type', 'Picked-up Items Count']
+
+    item_heatmap = item_heatmap.merge(pickedup_items_group, on='Item Type', how='left') 
+
+
+    st.dataframe(item_heatmap)
+
+
+
     ### Heatmap -------------------------------------------------------------------
     st.plotly_chart(delation_heatmap_fig, use_container_width=True)  
     # Show main table 
@@ -301,8 +331,6 @@ def main():
     active_usage_period_distribution_fig.update_layout(bargap=0.2)
     active_usage_period_distribution_fig.update_traces(marker_color='#3c8ff3')
     col1.plotly_chart(active_usage_period_distribution_fig, use_container_width=True)
-
-
 
 
 if __name__ == '__main__':
