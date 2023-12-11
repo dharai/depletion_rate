@@ -22,6 +22,17 @@ def color_depletion_table(val):
     return f'background-color: {color}'  
 
 
+def get_ragout_month(days): 
+    current_date = datetime.datetime.now()  
+
+    # Calculate the new date by adding the specified number of days
+    new_date = current_date + datetime.timedelta(days=days)
+
+    # Get the resulting month in words
+    resulting_month = new_date.strftime("%B")
+
+    return resulting_month
+
 def main(): 
     st.markdown('<h1 style="color:#4B7CA7;font-size:32px;">Laundris Depletion Rate Analysis</h1>', unsafe_allow_html=True)  
 
@@ -141,19 +152,19 @@ def main():
     ### active items that are inactive for less than 90 days 
     features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
     labeled_data = ml.predict_ragout_time_group(active_items_df[features], 30) 
-    active_items_df = pd.merge(active_items_df, labeled_data, on='rfid_id', how='inner') 
-    active_items_df['predicted_ragout_time'] = active_items_df['predicted_ragout_time'].astype(str) + ' days'  
+    active_items_df = pd.merge(active_items_df, labeled_data, on='rfid_id', how='inner')  
 
     if n_normal > 0: 
         features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
         labeled_data = ml.predict_ragout_time_group(normal_df[features], 0) 
-        normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner') 
+        normal_df = pd.merge(normal_df, labeled_data, on='rfid_id', how='inner')  
+        normal_df['ragout_month'] = normal_df.apply(lambda x: get_ragout_month (x['predicted_ragout_time']), axis=1)  
 
-        normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days'  
 
+    active_items_df['ragout_month'] = active_items_df.apply(lambda x: get_ragout_month (x['predicted_ragout_time']), axis=1)  
 
-    ## create par level heatmap 
-    columns = ['rfid_id', 'item_type_name', 'side', 'last_operation', 'predicted_ragout_time']
+    ## create par level heatmap s
+    columns = ['rfid_id', 'item_type_name', 'side', 'last_operation', 'ragout_month', 'predicted_ragout_time']
      
     item_heatmap = order_cycle_df.item_type_name.value_counts()
     item_heatmap = item_heatmap.reset_index()  
@@ -178,11 +189,14 @@ def main():
     item_heatmap = item_heatmap.merge(pickedup_items_group, on='Item Type', how='left') 
     item_heatmap.fillna(0, inplace=True) 
     item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap['On Facility Items Count']
-
+ 
     
     st.dataframe(item_heatmap)
 
+    if n_normal > 0: 
+        normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days' 
 
+    active_items_df['predicted_ragout_time'] = active_items_df['predicted_ragout_time'].astype(str) + ' days'  
 
     ### Heatmap -------------------------------------------------------------------
     st.plotly_chart(delation_heatmap_fig, use_container_width=True)  
@@ -255,7 +269,7 @@ def main():
     if n_normal > 0: 
         # Show main table 
         show_columns = ['Label', 'rfid_id', 'creation_date', 'birthday', 'last_scan_date', 'item_type_name',
-                        'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 'predicted_ragout_time']  
+                        'total_washes', 'pickup_count', 'dropoff_count', 'usage_period', 'last_operation', 'inactive_time', 'predicted_ragout', 'predicted_ragout_time', 'ragout_month']  
     
     expander = st.expander("📁 Detailed Analysis") 
     expander.dataframe(normal_df[show_columns].style.applymap(color_depletion_table, subset=['Label']), 
