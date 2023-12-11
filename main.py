@@ -166,7 +166,7 @@ def main():
     item_heatmap.rename(columns={"Items Count": "Current Lost Items"}, inplace=True)
 
     if n_normal > 0: 
-        normal_items_df = pd.concat([normal_df[columns], normal_items_df[columns]])
+        normal_items_df = pd.concat([normal_df[columns], active_items_df[columns]])
     else: 
         normal_items_df = active_items_df[columns]
 
