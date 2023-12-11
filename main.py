@@ -22,6 +22,20 @@ def color_depletion_table(val):
     return f'background-color: {color}'  
 
 
+def get_next_month(current_month):
+    # Convert the month name to a datetime object
+    current_date = datetime.strptime(current_month, '%B')
+
+    # Calculate the first day of the next month
+    first_day_of_next_month = current_date.replace(day=1) + datetime.timedelta(days=32)
+
+    # Get the name of the next month
+    next_month_name = first_day_of_next_month.strftime('%B')
+
+    return next_month_name
+
+
+
 def get_ragout_month(days): 
     current_date = datetime.datetime.now()  
 
@@ -188,9 +202,21 @@ def main():
 
     item_heatmap = item_heatmap.merge(pickedup_items_group, on='Item Type', how='left') 
     item_heatmap.fillna(0, inplace=True) 
-    item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap['On Facility Items Count']
- 
     
+    # Get the current date and time
+    current_date = datetime.datetime.now()
+    # Get the current month in words
+    current_month = current_date.strftime("%B")
+
+    current_month_df = normal_items_df[normal_items_df.ragout_month == current_month] 
+    current_month_group = current_month_df.item_type_name.value_counts()
+    current_month_group = current_month_group.reset_index()  
+    current_month_group.columns = ['Item Type', f'Ragout on {current_month}']
+
+    item_heatmap = item_heatmap.merge(current_month_group, on='Item Type', how='left')  
+
+    item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {current_month}']
+
     st.dataframe(item_heatmap)
 
     if n_normal > 0: 
