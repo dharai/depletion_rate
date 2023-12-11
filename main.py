@@ -241,14 +241,14 @@ def main():
     item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
 
     item_heatmap.set_index("Item Type", inplace=True)
-    custom_color_scale = ['#FFFFFF', '#eb827f'] 
+    custom_color_scale = ['#eb827f', '#FFFFFF'] 
     items_heatmap_fig = px.imshow(item_heatmap,  
                                 labels=dict(x="Category", y="Item Type"), 
                                 x=item_heatmap.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
     
     st.plotly_chart(items_heatmap_fig, use_container_width=True)   
 
-    st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
+    # st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
 
     if n_normal > 0: 
         normal_df['predicted_ragout_time'] = normal_df['predicted_ragout_time'].astype(str) + ' days' 
