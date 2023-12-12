@@ -68,9 +68,12 @@ def get_desired_quantity(item_type_ids, customer_id):
     room_profile_df['ideal_par_level'].fillna(customer_par_level, inplace=True) 
 
     room_profile_df['Desired Quantity'] = room_profile_df['item_quantity'] * room_profile_df['quantity'] * room_profile_df['ideal_par_level']
-    room_profile_df.rename(columns={"customer_item_type_name":"Item Type"}, inplace=True)
+
+    par_level_group = room_profile_df.groupby("customer_item_type_name").sum()
+    par_level_group = par_level_group.reset_index()  
+    par_level_group.columns = ['Item Type', 'Desired Quantity'] 
     
-    return room_profile_df[['Item Type', 'Desired Quantity']]
+    return par_level_group
 
 
 
