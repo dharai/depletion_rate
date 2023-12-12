@@ -22,6 +22,10 @@ def color_depletion_table(val):
     return f'background-color: {color}'  
 
 
+def get_rounded_value(value): 
+    return float('{:.2f}'.format(value)) 
+
+
 def get_next_month(current_month):
     # Convert the month name to a datetime object
     current_date = datetime.datetime.strptime(current_month, '%B')
@@ -243,6 +247,10 @@ def main():
     item_heatmap[f'Par level - {current_month}'] = item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100
     item_heatmap[f'Par level - {next_first_month}'] = item_heatmap[f'Available on {next_first_month}']/item_heatmap['Desired Quantity'] * 100
     item_heatmap[f'Par level - {next_second_month}'] = item_heatmap[f'Available on {next_second_month}']/item_heatmap['Desired Quantity'] * 100 
+
+    item_heatmap[f'Par level - {current_month}'] = item_heatmap[f'Par level - {current_month}'].apply(get_rounded_value)
+    item_heatmap[f'Par level - {next_first_month}'] = item_heatmap[f'Par level - {next_first_month}'].apply(get_rounded_value)
+    item_heatmap[f'Par level - {next_second_month}'] = item_heatmap[f'Par level - {next_second_month}'].apply(get_rounded_value)
 
     par_heatmap_data = item_heatmap[['Item Type', f'Par level - {current_month}', f'Par level - {next_first_month}', f'Par level - {next_second_month}']]
     st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
