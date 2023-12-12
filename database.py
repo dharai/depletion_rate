@@ -42,13 +42,24 @@ def get_desired_quantity(item_type_ids, customer_id):
     # Convert the list to a string of comma-separated values
     item_type_ids_str = ', '.join(map(str, item_type_ids)) 
 
-    room_profile_sql = """
-    select r.customer_room_type_id, r.customer_item_type_id as item_type_id, r.item_quantity, h.quantity
-        from customer_roomprofile r
-        join customer_hotelprofile h on r.customer_room_type_id = h.customer_room_type_id
-        where r.customer_item_type_id in ({})
-        and h.customer_id = {}
-    """.format(item_type_ids_str, customer_id)
+    if customer_id == 45: 
+        room_profile_sql = """
+        select r.customer_room_type_id, r.customer_item_type_id as item_type_id, r.item_quantity, h.quantity
+            from customer_roomprofile r
+            join customer_hotelprofile h on r.customer_room_type_id = h.customer_room_type_id
+            where r.customer_item_type_id in ({})
+            and h.customer_id in (37, 38)
+        """.format(item_type_ids_str)
+    else: 
+        room_profile_sql = """
+        select r.customer_room_type_id, r.customer_item_type_id as item_type_id, r.item_quantity, h.quantity
+            from customer_roomprofile r
+            join customer_hotelprofile h on r.customer_room_type_id = h.customer_room_type_id
+            where r.customer_item_type_id in ({})
+            and h.customer_id = {}
+        """.format(item_type_ids_str, customer_id)
+
+
 
     par_level_sql = """
     select id as item_type_id, ideal_par_level, customer_item_type_name 
