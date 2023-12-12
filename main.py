@@ -262,8 +262,22 @@ def main():
     
     st.plotly_chart(par_heatmap_fig, use_container_width=True)  
 
+    item_heatmap.rename(columns={"Current Available Items":f"Current Available Items ({current_month})", 
+                                 f"Par level - {current_month}":f"Current Par level ({current_month})", 
+                                 f"Ragout on {next_first_month}":f"{next_first_month} Ragout Items", 
+                                 f"Ragout on {next_second_month}":f"{next_second_month} Ragout Items", 
+                                 f"Available on ({next_first_month})": f"Available Items ({next_first_month})", 
+                                 f"Available on ({next_second_month})": f"Available Items ({next_second_month})",  
+                                 f"Par level - {next_first_month}": f"Par Level ({next_first_month})",  
+                                 f"Par level - {next_second_month}": f"Par Level ({next_second_month})",  
+                                 "On Facility Items Count":"On Facility Items"}, inplace=True)
+
     expander = st.expander("📁 Detailed Table") 
-    expander.dataframe(item_heatmap, use_container_width=True, hide_index=True) 
+    columns = ['Item Type', 'Current Ragout Items', 'Current Lost Items', 'On Facility Items', f'Current Available Items ({current_month})', f'Current Par level ({current_month})', 
+               f'{next_first_month} Ragout Items', f'Available Items ({next_first_month})', f'Par level ({next_second_month})',  
+               f'{next_second_month} Ragout Items', f'Available Items ({next_second_month})', f'Par level ({next_second_month})', 'Desired Quantity']
+    
+    expander.dataframe(item_heatmap[columns], use_container_width=True, hide_index=True) 
 
     st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
