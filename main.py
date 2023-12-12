@@ -266,8 +266,8 @@ def main():
                                  f"Par level - {current_month}":f"Current Par level ({current_month})", 
                                  f"Ragout on {next_first_month}":f"{next_first_month} Ragout Items", 
                                  f"Ragout on {next_second_month}":f"{next_second_month} Ragout Items", 
-                                 f"Available on ({next_first_month})": f"Available Items ({next_first_month})", 
-                                 f"Available on ({next_second_month})": f"Available Items ({next_second_month})",  
+                                 f"Available on {next_first_month}": f"Available Items ({next_first_month})", 
+                                 f"Available on {next_second_month}": f"Available Items ({next_second_month})",  
                                  f"Par level - {next_first_month}": f"Par Level ({next_first_month})",  
                                  f"Par level - {next_second_month}": f"Par Level ({next_second_month})",  
                                  "On Facility Items Count":"On Facility Items"}, inplace=True)
