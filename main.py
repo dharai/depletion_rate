@@ -253,7 +253,6 @@ def main():
     item_heatmap[f'Par level - {next_second_month}'] = item_heatmap[f'Par level - {next_second_month}'].apply(get_rounded_value)
 
     par_heatmap_data = item_heatmap[['Item Type', f'Par level - {current_month}', f'Par level - {next_first_month}', f'Par level - {next_second_month}']]
-    st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
     custom_color_scale = ['#FFFFFF', '#3c8ff3'] 
@@ -262,6 +261,9 @@ def main():
                                 x=par_heatmap_data.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
     
     st.plotly_chart(par_heatmap_fig, use_container_width=True)  
+
+    expander = st.expander("📁 Detailed Table") 
+    expander.dataframe(item_heatmap, use_container_width=True, hide_index=True) 
 
     st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
