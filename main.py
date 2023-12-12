@@ -241,15 +241,20 @@ def main():
     room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
     item_heatmap = pd.merge(item_heatmap, room_profile_df, on='Item Type') 
 
-    st.dataframe(item_heatmap)
+    item_heatmap[f'Par level - {current_month}'] = '{:.2f}%'.format(item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100) 
+    item_heatmap[f'Par level - {next_first_month}'] = '{:.2f}%'.format(item_heatmap[f'Available on {next_first_month}']/item_heatmap['Desired Quantity'] * 100)  
+    item_heatmap[f'Par level - {next_second_month}'] = '{:.2f}%'.format(item_heatmap[f'Available on {next_second_month}']/item_heatmap['Desired Quantity'] * 100) 
 
-    # item_heatmap.set_index("Item Type", inplace=True)
-    # custom_color_scale = ['#FFFFFF', '#3c8ff3'] 
-    # items_heatmap_fig = px.imshow(item_heatmap,  
-    #                             labels=dict(x="Category", y="Item Type"), 
-    #                             x=item_heatmap.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
+    par_heatmap_data = item_heatmap[['Item Type',f'Par level - {current_month}', f'Par level - {next_first_month}', f'Par level - {next_second_month}']]
+    st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
+
+    par_heatmap_data.set_index("Item Type", inplace=True)
+    custom_color_scale = ['#FFFFFF', '#3c8ff3'] 
+    par_heatmap_fig = px.imshow(par_heatmap_data,  
+                                labels=dict(x="Month", y="Item Type"), 
+                                x=par_heatmap_data.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
     
-    # st.plotly_chart(items_heatmap_fig, use_container_width=True)  
+    st.plotly_chart(par_heatmap_fig, use_container_width=True)  
 
     st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
