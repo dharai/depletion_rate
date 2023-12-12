@@ -235,19 +235,21 @@ def main():
 
     item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
 
-    item_heatmap.set_index("Item Type", inplace=True)
-    custom_color_scale = ['#FFFFFF', '#3c8ff3'] 
-    items_heatmap_fig = px.imshow(item_heatmap,  
-                                labels=dict(x="Category", y="Item Type"), 
-                                x=item_heatmap.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
-    
-    st.plotly_chart(items_heatmap_fig, use_container_width=True)  
 
     item_type_ids =  list(order_cycle_df.item_type_id.unique()) 
 
     room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
+    item_heatmap = pd.merge(item_heatmap, room_profile_df, on='Item Type') 
 
-    st.dataframe(room_profile_df)
+    st.dataframe(item_heatmap)
+
+    # item_heatmap.set_index("Item Type", inplace=True)
+    # custom_color_scale = ['#FFFFFF', '#3c8ff3'] 
+    # items_heatmap_fig = px.imshow(item_heatmap,  
+    #                             labels=dict(x="Category", y="Item Type"), 
+    #                             x=item_heatmap.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
+    
+    # st.plotly_chart(items_heatmap_fig, use_container_width=True)  
 
     st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
