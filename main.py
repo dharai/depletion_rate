@@ -235,17 +235,16 @@ def main():
 
     item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
 
-
     item_type_ids =  list(order_cycle_df.item_type_id.unique()) 
 
     room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
     item_heatmap = pd.merge(item_heatmap, room_profile_df, on='Item Type') 
 
-    item_heatmap[f'Par level - {current_month}'] = '{:.2f}%'.format(item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100) 
-    item_heatmap[f'Par level - {next_first_month}'] = '{:.2f}%'.format(item_heatmap[f'Available on {next_first_month}']/item_heatmap['Desired Quantity'] * 100)  
-    item_heatmap[f'Par level - {next_second_month}'] = '{:.2f}%'.format(item_heatmap[f'Available on {next_second_month}']/item_heatmap['Desired Quantity'] * 100) 
+    item_heatmap[f'Par level - {current_month}'] = item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100
+    item_heatmap[f'Par level - {next_first_month}'] = item_heatmap[f'Available on {next_first_month}']/item_heatmap['Desired Quantity'] * 100
+    item_heatmap[f'Par level - {next_second_month}'] = item_heatmap[f'Available on {next_second_month}']/item_heatmap['Desired Quantity'] * 100 
 
-    par_heatmap_data = item_heatmap[['Item Type',f'Par level - {current_month}', f'Par level - {next_first_month}', f'Par level - {next_second_month}']]
+    par_heatmap_data = item_heatmap[['Item Type', f'Par level - {current_month}', f'Par level - {next_first_month}', f'Par level - {next_second_month}']]
     st.dataframe(item_heatmap, use_container_width=True, hide_index=True)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
