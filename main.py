@@ -242,6 +242,8 @@ def main():
     item_type_ids =  list(order_cycle_df.item_type_id.unique()) 
 
     room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
+    st.dataframe(room_profile_df, use_container_width=True, hide_index=True) 
+
     item_heatmap = pd.merge(item_heatmap, room_profile_df, on='Item Type') 
 
     item_heatmap[f'Par level - {current_month}'] = item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100
