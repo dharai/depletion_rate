@@ -241,7 +241,13 @@ def main():
                                 labels=dict(x="Category", y="Item Type"), 
                                 x=item_heatmap.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
     
-    st.plotly_chart(items_heatmap_fig, use_container_width=True)   
+    st.plotly_chart(items_heatmap_fig, use_container_width=True)  
+
+    item_type_ids =  list(order_cycle_df.item_type_id.unique()) 
+
+    room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
+
+    st.dataframe(room_profile_df)
 
     st.info("Number of items that are inactive for more than 90 days: **{:,} ({:.2f}%)**".format(n_inactive_90_days, p_inactive_90_days), icon='🛑') 
     st.info("Current depletion rate: **{:,} ({:.2f}%)**".format(n_ragout+n_lost, p_depletion*100), icon='🛑') 
