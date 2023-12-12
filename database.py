@@ -37,6 +37,41 @@ def fetch_item_type_names():
     return df 
 
 
+def get_desired_quantity(item_type_ids, customer_id):
+    conn = connect()  
+    # Convert the list to a string of comma-separated values
+    item_type_ids_str = ', '.join(map(str, item_type_ids)) 
+
+    room_profile_sql = """
+    select r.customer_room_type_id, r.customer_item_type_id as item_type_id, r.item_quantity, h.quantity
+        from customer_roomprofile r
+        join customer_hotelprofile h on r.customer_room_type_id = h.customer_room_type_id
+        where r.customer_item_type_id in ({})
+        and h.customer_id = {}
+    """.format(item_type_ids_str, customer_id)
+
+    par_level_sql = """
+    select id as item_type_id, ideal_par_level, customer_item_type_name 
+        from customer_customerinventoryitemtype
+        where id in ({})
+    """
+
+    customer_par_level_sql = f"select par_level from customer where customer_id = {customer_id}"
+
+    room_profile_df = pd.read_sql(room_profile_sql, conn) 
+    par_level_df    = pd.read_sql(par_level_sql, conn) 
+    customer_par_level = pd.read_sql(customer_par_level_sql, conn) 
+    customer_par_level = customer_par_level['par_level'].iloc[0] 
+
+    room_profile_df = pd.merge(room_profile_df, par_level_df, on='item_type_id') 
+
+    room_profile_df['ideal_par_level'].fillna(customer_par_level, inplace=True) 
+    
+    return room_profile_df
+
+
+
+
 @st.cache_data
 def fetch_data(customer_id):
     rfid_sql = f"""SELECT r.rfid_id, r.creation_date, r.last_updated_date, r.status, r.ragout_date, r.total_washes, r.last_scan_date, r.item_type_id, 
