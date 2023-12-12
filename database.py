@@ -54,7 +54,7 @@ def get_desired_quantity(item_type_ids, customer_id):
     select id as item_type_id, ideal_par_level, customer_item_type_name 
         from customer_customerinventoryitemtype
         where id in ({})
-    """.format(item_type_ids)
+    """.format(item_type_ids_str)
 
     customer_par_level_sql = f"select par_level from customer where customer_id = {customer_id}"
 
