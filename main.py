@@ -216,7 +216,7 @@ def main():
     item_heatmap = item_heatmap.merge(current_month_group, on='Item Type', how='left')  
 
     item_heatmap.fillna(0, inplace=True) 
-    item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {current_month}']
+    item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap[f'Ragout on {current_month}']
 
     next_first_month_df = normal_items_df[normal_items_df.ragout_month == next_first_month] 
     next_second_month_df = normal_items_df[normal_items_df.ragout_month == next_second_month]
@@ -232,12 +232,12 @@ def main():
     item_heatmap = item_heatmap.merge(next_first_month_group, on='Item Type', how='left')  
     item_heatmap.fillna(0, inplace=True)
 
-    item_heatmap[f'Available on {next_first_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}']
+    item_heatmap[f'Available on {next_first_month}'] = item_heatmap['Current Available Items'] - item_heatmap[f'Ragout on {next_first_month}']
 
     item_heatmap = item_heatmap.merge(next_second_month_group, on='Item Type', how='left')  
     item_heatmap.fillna(0, inplace=True)
 
-    item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] + item_heatmap['On Facility Items Count'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
+    item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
 
     item_type_ids =  list(order_cycle_df.item_type_id.unique()) 
 
@@ -269,11 +269,10 @@ def main():
                                  f"Available on {next_first_month}": f"Available Items ({next_first_month})", 
                                  f"Available on {next_second_month}": f"Available Items ({next_second_month})",  
                                  f"Par level - {next_first_month}": f"Par level ({next_first_month})",  
-                                 f"Par level - {next_second_month}": f"Par level ({next_second_month})",  
-                                 "On Facility Items Count":"On Facility Items"}, inplace=True)
+                                 f"Par level - {next_second_month}": f"Par level ({next_second_month})"}, inplace=True)
 
     expander = st.expander("📁 Detailed Table") 
-    columns = ['Item Type', 'Current Ragout Items', 'Current Lost Items', 'On Facility Items', f'Current Available Items ({current_month})', f'Current Par level ({current_month})', 
+    columns = ['Item Type', 'Current Ragout Items', 'Current Lost Items', f'Current Available Items ({current_month})', f'Current Par level ({current_month})', 
                f'{next_first_month} Ragout Items', f'Available Items ({next_first_month})', f'Par level ({next_first_month})',  
                f'{next_second_month} Ragout Items', f'Available Items ({next_second_month})', f'Par level ({next_second_month})', 'Desired Quantity']
     
