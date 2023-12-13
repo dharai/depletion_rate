@@ -74,4 +74,6 @@ def predict_ragout_time_group(df, addition):
     df['predicted_ragout_time'] = model_lgbm.predict(data) 
     df['predicted_ragout_time'] = df['predicted_ragout_time'].apply(math.ceil) + addition + 15 
 
+    df.loc[df['usage_period'] < 90, 'predicted_ragout_time'] = 200 
+
     return df[['rfid_id', 'predicted_ragout_time']]
