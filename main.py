@@ -269,11 +269,11 @@ def main():
     item_heatmap = pd.merge(item_heatmap, last_first_month_lost_group, on='Item Type', how='left')
     item_heatmap = pd.merge(item_heatmap, last_second_month_lost_group, on='Item Type', how='left')
 
-
     item_heatmap.fillna(0, inplace=True) 
+
     item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap[f'Ragout on {current_month}']
-    item_heatmap[f'{last_first_month} Lost Items'] = item_heatmap[f'{last_first_month} Lost Items'] - f'{last_second_month} Lost Items'
-    item_heatmap['Current Lost Items'] = item_heatmap['Current Lost Items'] - item_heatmap[f'{last_first_month} Lost Items'] - f'{last_second_month} Lost Items'  
+    item_heatmap[f'{last_first_month} Lost Items'] = item_heatmap[f'{last_first_month} Lost Items'] - item_heatmap[f'{last_second_month} Lost Items']
+    item_heatmap['Current Lost Items'] = item_heatmap['Current Lost Items'] - item_heatmap[f'{last_first_month} Lost Items'] - item_heatmap[f'{last_second_month} Lost Items']
 
     item_heatmap[f'Available Items ({last_second_month})'] = item_heatmap['Total Items Count'] - item_heatmap[f'{last_second_month} Lost Items']
     item_heatmap[f'Available Items ({last_first_month})'] = item_heatmap['Total Items Count'] - item_heatmap[f'{last_second_month} Lost Items'] 
