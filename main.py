@@ -342,7 +342,7 @@ def main():
     # st.dataframe(item_heatmap)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
-    custom_color_scale = ['#eb827f', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'] 
+    custom_color_scale = ['#eb827f', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'] 
     par_heatmap_fig = px.imshow(par_heatmap_data,  
                                 labels=dict(x="Month", y="Item Type"), 
                                 x=par_heatmap_data.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
