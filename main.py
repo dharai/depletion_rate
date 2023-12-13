@@ -354,8 +354,9 @@ def main():
     
     number_of_intervals = len(interval_names)
     for idt in range(0, number_of_intervals):
-        columns = ['Item Type', f"Available Items ({interval_names[idt]})", f'{interval_names[idt]} Lost Items', 
-                   f'{interval_names[idt]} Ragout Items', f"Par level ({interval_names[idt]})"] 
+        columns = ['Item Type', f'{interval_names[idt]} Lost Items', 
+                   f'{interval_names[idt]} Ragout Items', f"Available Items ({interval_names[idt]})", 'Desired Quanntity', 
+                   f"Par level ({interval_names[idt]})"] 
         
         expander = interval_detail_tabs[idt].expander(f"📁 Detailed Table for {interval_names[idt]}") 
         expander.dataframe(item_heatmap[columns], use_container_width=True, hide_index=True) 
