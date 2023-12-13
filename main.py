@@ -244,15 +244,15 @@ def main():
     room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
     item_heatmap = pd.merge(item_heatmap, room_profile_df, on='Item Type') 
 
-    item_heatmap[f'Par level - {current_month}'] = item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100
-    item_heatmap[f'Par level - {next_first_month}'] = item_heatmap[f'Available on {next_first_month}']/item_heatmap['Desired Quantity'] * 100
-    item_heatmap[f'Par level - {next_second_month}'] = item_heatmap[f'Available on {next_second_month}']/item_heatmap['Desired Quantity'] * 100 
+    item_heatmap[f'{current_month}'] = item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100
+    item_heatmap[f'{next_first_month}'] = item_heatmap[f'Available on {next_first_month}']/item_heatmap['Desired Quantity'] * 100
+    item_heatmap[f'{next_second_month}'] = item_heatmap[f'Available on {next_second_month}']/item_heatmap['Desired Quantity'] * 100 
 
-    item_heatmap[f'Par level - {current_month}'] = item_heatmap[f'Par level - {current_month}'].apply(get_rounded_value)
-    item_heatmap[f'Par level - {next_first_month}'] = item_heatmap[f'Par level - {next_first_month}'].apply(get_rounded_value)
-    item_heatmap[f'Par level - {next_second_month}'] = item_heatmap[f'Par level - {next_second_month}'].apply(get_rounded_value)
+    item_heatmap[f'{current_month}'] = item_heatmap[f'{current_month}'].apply(get_rounded_value)
+    item_heatmap[f'{next_first_month}'] = item_heatmap[f'{next_first_month}'].apply(get_rounded_value)
+    item_heatmap[f'{next_second_month}'] = item_heatmap[f'{next_second_month}'].apply(get_rounded_value)
 
-    par_heatmap_data = item_heatmap[['Item Type', f'Par level - {current_month}', f'Par level - {next_first_month}', f'Par level - {next_second_month}']]
+    par_heatmap_data = item_heatmap[['Item Type', f'{current_month}', f'{next_first_month}', f'{next_second_month}']]
 
     par_heatmap_data.set_index("Item Type", inplace=True)
     custom_color_scale = ['#eb827f', '#FFFFFF'] 
@@ -263,13 +263,13 @@ def main():
     st.plotly_chart(par_heatmap_fig, use_container_width=True)  
 
     item_heatmap.rename(columns={"Current Available Items":f"Current Available Items ({current_month})", 
-                                 f"Par level - {current_month}":f"Current Par level ({current_month})", 
+                                 f"{current_month}":f"Current Par level ({current_month})", 
                                  f"Ragout on {next_first_month}":f"{next_first_month} Ragout Items", 
                                  f"Ragout on {next_second_month}":f"{next_second_month} Ragout Items", 
                                  f"Available on {next_first_month}": f"Available Items ({next_first_month})", 
                                  f"Available on {next_second_month}": f"Available Items ({next_second_month})",  
-                                 f"Par level - {next_first_month}": f"Par level ({next_first_month})",  
-                                 f"Par level - {next_second_month}": f"Par level ({next_second_month})"}, inplace=True)
+                                 f"{next_first_month}": f"Par level ({next_first_month})",  
+                                 f"{next_second_month}": f"Par level ({next_second_month})"}, inplace=True)
 
     expander = st.expander("📁 Detailed Table") 
     columns = ['Item Type', 'Current Ragout Items', 'Current Lost Items', f'Current Available Items ({current_month})', f'Current Par level ({current_month})', 
