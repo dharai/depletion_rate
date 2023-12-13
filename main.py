@@ -319,6 +319,24 @@ def main():
 
     par_heatmap_data = item_heatmap[['Item Type', f'{last_second_month}', f'{last_first_month}', f'{current_month}', f'{next_first_month}', f'{next_second_month}']]
 
+    item_heatmap.rename(columns={"Current Available Items":f"Available Items ({current_month})", 
+                                 f"{current_month}":f"Par level ({current_month})", 
+                                 "Current Lost Items": f"{current_month} Lost Items", 
+                                 "Current Ragout Items": f"{current_month} Ragout Items", 
+                                 f"Ragout on {next_first_month}":f"{next_first_month} Ragout Items", 
+                                 f"Ragout on {next_second_month}":f"{next_second_month} Ragout Items", 
+                                 f"Available on {next_first_month}": f"Available Items ({next_first_month})", 
+                                 f"Available on {next_second_month}": f"Available Items ({next_second_month})",  
+                                 f"{next_first_month}": f"Par level ({next_first_month})",  
+                                 f"{next_second_month}": f"Par level ({next_second_month})", 
+                                 f"{last_first_month}": f"Par level ({last_first_month})",  
+                                 f"{last_second_month}": f"Par level ({last_second_month})"
+                                 }, inplace=True)
+    
+    item_heatmap[f'{next_first_month} Lost Items'] = (item_heatmap[f'{current_month} Lost Items'] + item_heatmap[f'{last_first_month} Lost Items'] + item_heatmap[f'{last_second_month} Lost Items']) / 3 
+    item_heatmap[f'{next_second_month} Lost Items'] = (item_heatmap[f'{current_month} Lost Items'] + item_heatmap[f'{last_first_month} Lost Items'] + item_heatmap[f'{last_second_month} Lost Items']) / 3  
+    item_heatmap[f'{next_first_month} Lost Items'] = item_heatmap[f'{next_first_month} Lost Items'].apply(math.ceil)
+    item_heatmap[f'{next_second_month} Lost Items'] = item_heatmap[f'{next_second_month} Lost Items'].apply(math.ceil)
     
     st.dataframe(item_heatmap)
 
@@ -330,25 +348,15 @@ def main():
     
     st.plotly_chart(par_heatmap_fig, use_container_width=True)  
 
-    item_heatmap.rename(columns={"Current Available Items":f"Available Items ({current_month})", 
-                                 f"{current_month}":f"Current Par level ({current_month})", 
-                                 f"Ragout on {next_first_month}":f"{next_first_month} Ragout Items", 
-                                 f"Ragout on {next_second_month}":f"{next_second_month} Ragout Items", 
-                                 f"Available on {next_first_month}": f"Available Items ({next_first_month})", 
-                                 f"Available on {next_second_month}": f"Available Items ({next_second_month})",  
-                                 f"{next_first_month}": f"Par level ({next_first_month})",  
-                                 f"{next_second_month}": f"Par level ({next_second_month})", 
-                                 f"{last_first_month}": f"Par level ({last_first_month})",  
-                                 f"{last_second_month}": f"Par level ({last_second_month})"
-                                 }, inplace=True)
-
     interval_names = [last_second_month, last_first_month, current_month, next_first_month, next_second_month]   
     interval_detail_tab_names = ["📁 " + x for x in interval_names] 
     interval_detail_tabs = st.tabs(interval_detail_tab_names) 
     
     number_of_intervals = len(interval_names)
     for idt in range(0, number_of_intervals):
-        columns = ['Item Type', f"Available Items ({interval_names[idt]})"]
+        columns = ['Item Type', f"Available Items ({interval_names[idt]})", f'{interval_names[idt]} Lost Items', 
+                   f'{interval_names[idt]} Ragout Items', f"Par level ({interval_names[idt]})"] 
+        
         expander = interval_detail_tabs[idt].expander(f"📁 Detailed Table for {interval_names[idt]}") 
         expander.dataframe(item_heatmap[columns], use_container_width=True, hide_index=True) 
 
