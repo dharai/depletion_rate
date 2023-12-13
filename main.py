@@ -260,8 +260,8 @@ def main():
     item_heatmap = pd.merge(item_heatmap, last_second_month_group, on='Item Type', how='left')
 
     ### previous lost 
-    last_second_month_lost_df = lost_df[(lost_df.inactive_time - 60) > 120]
-    last_first_month_lost_df = lost_df[(lost_df.inactive_time - 30) > 120]
+    last_second_month_lost_df = lost_df[(lost_df.inactive_time - 60) > 110]
+    last_first_month_lost_df = lost_df[(lost_df.inactive_time - 30) > 110]
 
     last_second_month_lost_group = last_second_month_lost_df.item_type_name.value_counts()
     last_second_month_lost_group = last_second_month_lost_group.reset_index()  
@@ -281,11 +281,12 @@ def main():
     item_heatmap['Current Lost Items'] = item_heatmap['Current Lost Items'] - item_heatmap[f'{last_first_month} Lost Items'] - item_heatmap[f'{last_second_month} Lost Items']
 
     item_heatmap[f'Available Items ({last_second_month})'] = item_heatmap['Total Items Count'] - item_heatmap[f'{last_second_month} Lost Items']
-    item_heatmap[f'Available Items ({last_first_month})'] = item_heatmap['Total Items Count'] - item_heatmap[f'{last_second_month} Lost Items'] 
+    item_heatmap[f'Available Items ({last_first_month})'] = item_heatmap['Total Items Count'] - item_heatmap[f'{last_second_month} Lost Items'] - item_heatmap[f'{last_first_month} Lost Items']
 
     item_heatmap[f'{last_second_month}'] = item_heatmap[f'Available Items ({last_second_month})']/item_heatmap['Desired Quantity'] * 100
     item_heatmap[f'{last_first_month}'] = item_heatmap[f'Available Items ({last_first_month})']/item_heatmap['Desired Quantity'] * 100
-
+    item_heatmap[f'{last_second_month}'] = item_heatmap[f'{last_second_month}'].apply(get_rounded_value)
+    item_heatmap[f'{last_first_month}'] = item_heatmap[f'{last_first_month}'].apply(get_rounded_value)
 
     next_first_month_df = normal_items_df[normal_items_df.ragout_month == next_first_month] 
     next_second_month_df = normal_items_df[normal_items_df.ragout_month == next_second_month]
@@ -316,7 +317,7 @@ def main():
     item_heatmap[f'{next_first_month}'] = item_heatmap[f'{next_first_month}'].apply(get_rounded_value)
     item_heatmap[f'{next_second_month}'] = item_heatmap[f'{next_second_month}'].apply(get_rounded_value)
 
-    par_heatmap_data = item_heatmap[['Item Type', f'{current_month}', f'{next_first_month}', f'{next_second_month}']]
+    par_heatmap_data = item_heatmap[['Item Type', f'{last_second_month}', f'{last_first_month}', f'{current_month}', f'{next_first_month}', f'{next_second_month}']]
 
     
     st.dataframe(item_heatmap)
