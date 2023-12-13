@@ -235,6 +235,11 @@ def main():
 
     item_heatmap = item_heatmap.merge(current_month_group, on='Item Type', how='left')  
 
+    item_type_ids =  list(order_cycle_df.item_type_id.unique()) 
+
+    room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
+    item_heatmap = pd.merge(item_heatmap, room_profile_df, on='Item Type') 
+
     # previous months data 
     current_date = pd.Timestamp(current_date, tz='UTC')
     last_first_month_start =  current_date - pd.Timedelta(days=60) 
@@ -302,11 +307,6 @@ def main():
     item_heatmap.fillna(0, inplace=True)
 
     item_heatmap[f'Available on {next_second_month}'] = item_heatmap['Current Available Items'] - item_heatmap[f'Ragout on {next_first_month}'] - item_heatmap[f'Ragout on {next_second_month}']
-
-    item_type_ids =  list(order_cycle_df.item_type_id.unique()) 
-
-    room_profile_df = db.get_desired_quantity(item_type_ids, selected_inventory_id)
-    item_heatmap = pd.merge(item_heatmap, room_profile_df, on='Item Type') 
 
     item_heatmap[f'{current_month}'] = item_heatmap['Current Available Items']/item_heatmap['Desired Quantity'] * 100
     item_heatmap[f'{next_first_month}'] = item_heatmap[f'Available on {next_first_month}']/item_heatmap['Desired Quantity'] * 100
