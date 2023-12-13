@@ -174,7 +174,7 @@ def fetch_data(customer_id):
     # pickup_dropoff_count_df['last_updated_date'] = pickup_dropoff_count_df['last_updated_date'].dt.date
     pickup_dropoff_count_df['last_scan_date'] = pickup_dropoff_count_df['last_scan_date'].dt.date
 
-    pickup_dropoff_count_df.drop(['ragout_date'], axis=1, inplace=True)
+    # pickup_dropoff_count_df.drop(['ragout_date'], axis=1, inplace=True)
     pickup_dropoff_count_df.loc[pickup_dropoff_count_df.inactive_time < 0, 'inactive_time'] = 0 
 
     pickup_dropoff_count_df.loc[pickup_dropoff_count_df.location_type == 'other', 'location_type'] = None
