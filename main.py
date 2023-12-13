@@ -259,9 +259,8 @@ def main():
     # previous months data 
     current_date = pd.Timestamp(current_date, tz='UTC')
     last_first_month_start =  current_date - pd.Timedelta(days=60) 
-    last_first_month_end =  current_date - pd.Timedelta(days=30) 
 
-    last_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < last_first_month_end) & (inactive_status_items_df.ragout_date>last_first_month_start)]
+    last_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < current_date) & (inactive_status_items_df.ragout_date>last_first_month_start)]
 
     st.dataframe(last_month_df)
 
