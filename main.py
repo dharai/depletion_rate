@@ -284,7 +284,7 @@ def main():
     item_heatmap[f'Available Items ({last_first_month})'] = item_heatmap['Total Items Count'] - item_heatmap[f'{last_second_month} Lost Items'] 
 
     item_heatmap[f'{last_second_month}'] = item_heatmap[f'Available Items ({last_second_month})']/item_heatmap['Desired Quantity'] * 100
-    item_heatmap[f'{last_first_month}'] = item_heatmap[f'Available on ({last_first_month})']/item_heatmap['Desired Quantity'] * 100
+    item_heatmap[f'{last_first_month}'] = item_heatmap[f'Available Items ({last_first_month})']/item_heatmap['Desired Quantity'] * 100
 
 
     next_first_month_df = normal_items_df[normal_items_df.ragout_month == next_first_month] 
