@@ -337,8 +337,8 @@ def main():
     item_heatmap[f'{next_second_month} Lost Items'] = (item_heatmap[f'{current_month} Lost Items'] + item_heatmap[f'{last_first_month} Lost Items'] + item_heatmap[f'{last_second_month} Lost Items']) / 3  
     item_heatmap[f'{next_first_month} Lost Items'] = item_heatmap[f'{next_first_month} Lost Items'].apply(math.ceil)
     item_heatmap[f'{next_second_month} Lost Items'] = item_heatmap[f'{next_second_month} Lost Items'].apply(math.ceil)
-    
-    st.dataframe(item_heatmap)
+
+    # st.dataframe(item_heatmap)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
     custom_color_scale = ['#eb827f', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'] 
