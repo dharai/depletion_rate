@@ -235,6 +235,43 @@ def main():
 
     item_heatmap = item_heatmap.merge(current_month_group, on='Item Type', how='left')  
 
+    # previous months data 
+    current_date = pd.Timestamp(current_date, tz='UTC')
+    last_first_month_start =  current_date - pd.Timedelta(days=60) 
+    last_second_month_start =  current_date - pd.Timedelta(days=90)
+
+    last_first_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < current_date) & (inactive_status_items_df.ragout_date>last_first_month_start)]
+    last_second_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < last_first_month_start) & (inactive_status_items_df.ragout_date>last_second_month_start)] 
+
+    last_first_month_group = last_first_month_df.item_type_name.value_counts()
+    last_first_month_group = last_first_month_group.reset_index()  
+    last_first_month_group.columns = ['Item Type', f'{last_first_month} Ragout Items']  
+
+    last_second_month_group = last_second_month_df.item_type_name.value_counts()
+    last_second_month_group = last_second_month_group.reset_index()  
+    last_second_month_group.columns = ['Item Type', f'{last_second_month} Ragout Items']  
+
+    item_heatmap = pd.merge(item_heatmap, last_first_month_group, on='Item Type', how='left')
+    item_heatmap = pd.merge(item_heatmap, last_second_month_group, on='Item Type', how='left')
+
+    ### previous lost 
+    last_second_month_lost_df = lost_df[(lost_df.inactive_time - 60) > 90]
+    last_first_month_lost_df = lost_df[(lost_df.inactive_time - 30) > 90]
+
+    last_second_month_lost_group = last_second_month_lost_df.item_type_name.value_counts()
+    last_second_month_lost_group = last_second_month_lost_group.reset_index()  
+    last_second_month_lost_group.columns = ['Item Type', f'{last_second_month} Lost Items']
+
+    last_first_month_lost_group = last_first_month_lost_df.item_type_name.value_counts()
+    last_first_month_lost_group = last_first_month_lost_group.reset_index()  
+    last_first_month_lost_group.columns = ['Item Type', f'{last_first_month} Lost Items']
+
+    item_heatmap = pd.merge(item_heatmap, last_first_month_lost_group, on='Item Type', how='left')
+    item_heatmap = pd.merge(item_heatmap, last_second_month_lost_group, on='Item Type', how='left')
+
+    item_heatmap.fillna(0, inplace=True)
+    
+
     item_heatmap.fillna(0, inplace=True) 
     item_heatmap['Current Available Items'] = item_heatmap['Total Items Count'] - item_heatmap['Current Lost Items'] - item_heatmap['Current Ragout Items'] - item_heatmap[f'Ragout on {current_month}']
 
@@ -274,26 +311,6 @@ def main():
 
     par_heatmap_data = item_heatmap[['Item Type', f'{current_month}', f'{next_first_month}', f'{next_second_month}']]
 
-    # previous months data 
-    current_date = pd.Timestamp(current_date, tz='UTC')
-    last_first_month_start =  current_date - pd.Timedelta(days=60) 
-    last_second_month_start =  current_date - pd.Timedelta(days=90)
-
-    last_first_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < current_date) & (inactive_status_items_df.ragout_date>last_first_month_start)]
-    last_second_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < last_first_month_start) & (inactive_status_items_df.ragout_date>last_second_month_start)] 
-
-    last_first_month_group = last_first_month_df.item_type_name.value_counts()
-    last_first_month_group = last_first_month_group.reset_index()  
-    last_first_month_group.columns = ['Item Type', f'{last_first_month} Ragout Items']  
-
-    last_second_month_group = last_second_month_df.item_type_name.value_counts()
-    last_second_month_group = last_second_month_group.reset_index()  
-    last_second_month_group.columns = ['Item Type', f'{last_second_month} Ragout Items']  
-
-    item_heatmap = pd.merge(item_heatmap, last_first_month_group, on='Item Type', how='left')
-    item_heatmap = pd.merge(item_heatmap, last_second_month_group, on='Item Type', how='left')
-
-    item_heatmap.fillna(0, inplace=True)
     
     st.dataframe(item_heatmap)
 
