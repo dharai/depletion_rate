@@ -60,7 +60,7 @@ def main():
     selected_customer_name = col1.selectbox('Select Customer', inventory_name_list) 
     selected_inventory_id = inventory_id_list[inventory_name_list.index(selected_customer_name)] 
 
-    df, order_cycle_df = db.fetch_data(selected_inventory_id) # fetch main data 
+    df, order_cycle_df, inactive_status_items_df = db.fetch_data(selected_inventory_id) # fetch main data 
     total_number = order_cycle_df.shape[0]
 
     active_items_df = order_cycle_df[order_cycle_df.inactive_time <= 90]
@@ -255,6 +255,15 @@ def main():
     item_heatmap[f'{next_second_month}'] = item_heatmap[f'{next_second_month}'].apply(get_rounded_value)
 
     par_heatmap_data = item_heatmap[['Item Type', f'{current_month}', f'{next_first_month}', f'{next_second_month}']]
+
+    # previous months data 
+    current_date = pd.Timestamp(current_date, tz='UTC')
+    last_first_month_start =  current_date - pd.Timedelta(days=60) 
+    last_first_month_end =  current_date - pd.Timedelta(days=30) 
+
+    last_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < last_first_month_end) & (inactive_status_items_df.ragout_date>last_first_month_start)]
+
+    st.dataframe(last_month_df)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
     custom_color_scale = ['#eb827f', '#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF'] 

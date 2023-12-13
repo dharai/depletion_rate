@@ -88,7 +88,6 @@ def get_desired_quantity(item_type_ids, customer_id):
 
 
 
-
 @st.cache_data
 def fetch_data(customer_id):
     rfid_sql = f"""SELECT r.rfid_id, r.creation_date, r.last_updated_date, r.status, r.ragout_date, r.total_washes, r.last_scan_date, r.item_type_id, 
@@ -185,6 +184,7 @@ def fetch_data(customer_id):
     pickup_dropoff_count_df.loc[pickup_dropoff_count_df.side == 'facility', 'location_type'] = 'Facility' 
 
     pickup_dropoff_count_df = pickup_dropoff_count_df[pickup_dropoff_count_df.status == 'active'] 
+    inactive_status_df = pickup_dropoff_count_df[pickup_dropoff_count_df.status == 'inactive']  
     pickup_dropoff_count_df.drop(['status'], axis=1, inplace=True)
     
-    return df, pickup_dropoff_count_df
+    return df, pickup_dropoff_count_df, inactive_status_df
