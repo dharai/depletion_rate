@@ -39,6 +39,21 @@ def get_next_month(current_month):
     return next_month_name
 
 
+def get_previous_month(current_month):
+    # Convert the current month name to a datetime object
+    current_date = datetime.datetime.strptime(current_month, '%B')
+
+    # Calculate the first day of the current month
+    first_day_of_current_month = current_date.replace(day=1)
+
+    # Calculate the last day of the previous month
+    last_day_of_previous_month = first_day_of_current_month - datetime.timedelta(days=1)
+
+    # Get the name of the previous month
+    previous_month_name = last_day_of_previous_month.strftime('%B')
+
+    return previous_month_name
+
 
 def get_ragout_month(days): 
     current_date = datetime.datetime.now()  
@@ -209,6 +224,9 @@ def main():
     current_month = current_date.strftime("%B")
     next_first_month = get_next_month(current_month)
     next_second_month =  get_next_month(next_first_month)
+    last_first_month = get_previous_month(current_month)
+    last_second_month = get_previous_month(last_first_month)
+
 
     current_month_df = normal_items_df[normal_items_df.ragout_month == current_month] 
     current_month_group = current_month_df.item_type_name.value_counts()
@@ -264,11 +282,23 @@ def main():
     last_first_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < current_date) & (inactive_status_items_df.ragout_date>last_first_month_start)]
     last_second_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < last_first_month_start) & (inactive_status_items_df.ragout_date>last_second_month_start)] 
 
-    st.dataframe(last_first_month_df)
-    st.dataframe(last_second_month_df)
+    last_first_month_group = last_first_month_df.item_type_name.value_counts()
+    last_first_month_group = last_first_month_group.reset_index()  
+    last_first_month_group.columns = ['Item Type', f'{last_first_month} Ragout Items']  
+
+    last_second_month_group = last_second_month_df.item_type_name.value_counts()
+    last_second_month_group = last_second_month_group.reset_index()  
+    last_second_month_group.columns = ['Item Type', f'{last_second_month} Ragout Items']  
+
+    item_heatmap = pd.merge(item_heatmap, last_first_month_group, on='Item Type', how='left')
+    item_heatmap = pd.merge(item_heatmap, last_second_month_group, on='Item Type', how='left')
+
+    item_heatmap.fillna(0, inplace=True)
+    
+    st.dataframe(item_heatmap)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
-    custom_color_scale = ['#eb827f', '#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF'] 
+    custom_color_scale = ['#eb827f', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'] 
     par_heatmap_fig = px.imshow(par_heatmap_data,  
                                 labels=dict(x="Month", y="Item Type"), 
                                 x=par_heatmap_data.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
