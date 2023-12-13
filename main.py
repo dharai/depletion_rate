@@ -183,6 +183,7 @@ def main():
     active_items_df = pd.merge(active_items_df, labeled_data, on='rfid_id', how='inner')  
 
     active_items_df.loc[(active_items_df['inactive_time'] < 30) & (active_items_df['last_operation'] == 'No order cycle'), 'predicted_ragout_time'] = 250 
+    active_items_df.loc[active_items_df['inactive_time'] < 5, 'predicted_ragout_time'] = active_items_df['predicted_ragout_time']  + 45  
 
     if n_normal > 0: 
         features = ['rfid_id', 'customer_id', 'item_type_id', 'total_washes', 'pickup_count', 'dropoff_count', 'creation_date', 'birthday', 'last_updated_date']
