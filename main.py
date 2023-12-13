@@ -259,10 +259,13 @@ def main():
     # previous months data 
     current_date = pd.Timestamp(current_date, tz='UTC')
     last_first_month_start =  current_date - pd.Timedelta(days=60) 
+    last_second_month_start =  current_date - pd.Timedelta(days=90)
 
-    last_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < current_date) & (inactive_status_items_df.ragout_date>last_first_month_start)]
+    last_first_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < current_date) & (inactive_status_items_df.ragout_date>last_first_month_start)]
+    last_second_month_df = inactive_status_items_df[(inactive_status_items_df.ragout_date < last_first_month_start) & (inactive_status_items_df.ragout_date>last_second_month_start)] 
 
-    st.dataframe(last_month_df)
+    st.dataframe(last_first_month_df)
+    st.dataframe(last_second_month_df)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
     custom_color_scale = ['#eb827f', '#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF'] 
