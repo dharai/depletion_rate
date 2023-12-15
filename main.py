@@ -66,6 +66,7 @@ def get_ragout_month(days):
 
     return resulting_month
 
+
 def main(): 
     st.markdown('<h1 style="color:#4B7CA7;font-size:32px;">Laundris Depletion Rate Analysis</h1>', unsafe_allow_html=True)  
 
@@ -319,7 +320,7 @@ def main():
     item_heatmap[f'{next_second_month}'] = item_heatmap[f'{next_second_month}'].apply(get_rounded_value)
 
     par_heatmap_data = item_heatmap[['Item Type', f'{last_second_month}', f'{last_first_month}', f'{current_month}', f'{next_first_month}', f'{next_second_month}']]
-
+    
     item_heatmap.rename(columns={"Current Available Items":f"Available Items ({current_month})", 
                                  f"{current_month}":f"Par level ({current_month})", 
                                  "Current Lost Items": f"{current_month} Lost Items", 
@@ -334,6 +335,9 @@ def main():
                                  f"{last_second_month}": f"Par level ({last_second_month})"
                                  }, inplace=True)
     
+    available_heatmap_data = item_heatmap[['Item Type', f"Available Items ({last_second_month})",f"Available Items ({last_first_month})", 
+                                           f"Available Items ({current_month})", f"Available Items ({next_first_month})", f"Available Items ({next_second_month})"]]
+    
     item_heatmap[f'{next_first_month} Lost Items'] = (item_heatmap[f'{current_month} Lost Items'] + item_heatmap[f'{last_first_month} Lost Items'] + item_heatmap[f'{last_second_month} Lost Items']) / 3 
     item_heatmap[f'{next_second_month} Lost Items'] = (item_heatmap[f'{current_month} Lost Items'] + item_heatmap[f'{last_first_month} Lost Items'] + item_heatmap[f'{last_second_month} Lost Items']) / 3  
     item_heatmap[f'{next_first_month} Lost Items'] = item_heatmap[f'{next_first_month} Lost Items'].apply(math.ceil)
@@ -342,12 +346,21 @@ def main():
     # st.dataframe(item_heatmap)
 
     par_heatmap_data.set_index("Item Type", inplace=True)
-    custom_color_scale = ['#eb827f', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'] 
+    available_heatmap_data.set_index("Item Type", inplace=True)
+
+    custom_color_scale = ['#eb827f', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']
+
     par_heatmap_fig = px.imshow(par_heatmap_data,  
                                 labels=dict(x="Month", y="Item Type"), 
                                 x=par_heatmap_data.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto")   
     
-    st.plotly_chart(par_heatmap_fig, use_container_width=True)  
+    availability_heatmap_fig = px.imshow(available_heatmap_data,  
+                                labels=dict(x="Month", y="Item Type"), 
+                                x=par_heatmap_data.columns, text_auto=True, color_continuous_scale=custom_color_scale, aspect="auto") 
+    
+    tab1, tab2 = st.tabs(['By Availability', 'By Par Level'])
+    tab1.plotly_chart(availability_heatmap_fig, use_container_width=True)  
+    tab2.plotly_chart(par_heatmap_fig, use_container_width=True) 
 
     interval_names = [last_second_month, last_first_month, current_month, next_first_month, next_second_month]   
     interval_detail_tab_names = ["📁 " + x for x in interval_names] 
